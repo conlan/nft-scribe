@@ -1,0 +1,1030 @@
+{
+  "contractName": "Scribe",
+  "abi": [
+    {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "documents",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "dictator",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "text",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "dictate",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.12+commit.7709ece9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"constant\":false,\"inputs\":[],\"name\":\"dictate\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"documents\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"dictator\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"text\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"time\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/conlan/git/nft-annotations/contracts/Scribe.sol\":\"Scribe\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/conlan/git/nft-annotations/contracts/Scribe.sol\":{\"keccak256\":\"0x150d9eae6161ab31131be51e6bd04aafc579c3786ea3089692f687673b0bc516\",\"urls\":[\"bzz-raw://b09dc692658c175ba3530ce8aff96b2cadd7896db3041c7ac73e0adb929369d6\",\"dweb:/ipfs/QmYUWjFB3vSQg6dHH9EeaqDfhWptnBFwakqjH9LhMfmND8\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610294806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80634a0bd0b71461003b5780636339884414610045575b600080fd5b6100436100e1565b005b6100916004803603604081101561005b57600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506101fb565b604051808473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001838152602001828152602001935050505060405180910390f35b6000803373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060405180606001604052803373ffffffffffffffffffffffffffffffffffffffff1681526020017f68656c6c6f0000000000000000000000000000000000000000000000000000008152602001428152509080600181540180825580915050906001820390600052602060002090600302016000909192909190915060008201518160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506020820151816001015560408201518160020155505050565b6000602052816000526040600020818154811061021457fe5b9060005260206000209060030201600091509150508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690806001015490806002015490508356fea265627a7a723158203e187e88945c0b339acbcca1f7041853720c33f29b132e5ebd148131b8282aca64736f6c634300050c0032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100365760003560e01c80634a0bd0b71461003b5780636339884414610045575b600080fd5b6100436100e1565b005b6100916004803603604081101561005b57600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506101fb565b604051808473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001838152602001828152602001935050505060405180910390f35b6000803373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060405180606001604052803373ffffffffffffffffffffffffffffffffffffffff1681526020017f68656c6c6f0000000000000000000000000000000000000000000000000000008152602001428152509080600181540180825580915050906001820390600052602060002090600302016000909192909190915060008201518160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506020820151816001015560408201518160020155505050565b6000602052816000526040600020818154811061021457fe5b9060005260206000209060030201600091509150508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690806001015490806002015490508356fea265627a7a723158203e187e88945c0b339acbcca1f7041853720c33f29b132e5ebd148131b8282aca64736f6c634300050c0032",
+  "sourceMap": "26:282:1:-;;;169:26;8:9:-1;5:2;;;30:1;27;20:12;5:2;169:26:1;26:282;;;;;;",
+  "deployedSourceMap": "26:282:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;26:282:1;;;;;;;;;;;;;;;;;;;;;;;;198:108;;;:::i;:::-;;117:48;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;117:48:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;198:108;228:9;:21;238:10;228:21;;;;;;;;;;;;;;;255:46;;;;;;;;264:10;255:46;;;;;;;;;;;285:15;255:46;;;228:74;;39:1:-1;33:3;27:10;23:18;57:10;52:3;45:23;79:10;72:17;;0:93;228:74:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;198:108::o;117:48::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
+  "source": "pragma solidity ^0.5.12;\n\ncontract Scribe {\n\tstruct Document {\n\t\taddress dictator;\n\t\tbytes32 text;\n\t\tuint time;\n\t}\n\n\tmapping (address => Document[]) public documents;\n\n\tconstructor() public {\n\n\t}\n\n\tfunction dictate() public {\n\t\tdocuments[msg.sender].push(Document(msg.sender, \"hello\", block.timestamp));\n\t}\n}",
+  "sourcePath": "/Users/conlan/git/nft-annotations/contracts/Scribe.sol",
+  "ast": {
+    "absolutePath": "/Users/conlan/git/nft-annotations/contracts/Scribe.sol",
+    "exportedSymbols": {
+      "Scribe": [
+        93
+      ]
+    },
+    "id": 94,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 58,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".12"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 93,
+        "linearizedBaseContracts": [
+          93
+        ],
+        "name": "Scribe",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "Scribe.Document",
+            "id": 65,
+            "members": [
+              {
+                "constant": false,
+                "id": 60,
+                "name": "dictator",
+                "nodeType": "VariableDeclaration",
+                "scope": 65,
+                "src": "65:16:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 59,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "65:7:1",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 62,
+                "name": "text",
+                "nodeType": "VariableDeclaration",
+                "scope": 65,
+                "src": "85:12:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 61,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "85:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 64,
+                "name": "time",
+                "nodeType": "VariableDeclaration",
+                "scope": 65,
+                "src": "101:9:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 63,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "101:4:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Document",
+            "nodeType": "StructDefinition",
+            "scope": 93,
+            "src": "45:69:1",
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 70,
+            "name": "documents",
+            "nodeType": "VariableDeclaration",
+            "scope": 93,
+            "src": "117:48:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_Document_$65_storage_$dyn_storage_$",
+              "typeString": "mapping(address => struct Scribe.Document[])"
+            },
+            "typeName": {
+              "id": 69,
+              "keyType": {
+                "id": 66,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "126:7:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "117:31:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_Document_$65_storage_$dyn_storage_$",
+                "typeString": "mapping(address => struct Scribe.Document[])"
+              },
+              "valueType": {
+                "baseType": {
+                  "contractScope": null,
+                  "id": 67,
+                  "name": "Document",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 65,
+                  "src": "137:8:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Document_$65_storage_ptr",
+                    "typeString": "struct Scribe.Document"
+                  }
+                },
+                "id": 68,
+                "length": null,
+                "nodeType": "ArrayTypeName",
+                "src": "137:10:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_Document_$65_storage_$dyn_storage_ptr",
+                  "typeString": "struct Scribe.Document[]"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 73,
+              "nodeType": "Block",
+              "src": "190:5:1",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 74,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 71,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "180:2:1"
+            },
+            "returnParameters": {
+              "id": 72,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "190:0:1"
+            },
+            "scope": 93,
+            "src": "169:26:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 91,
+              "nodeType": "Block",
+              "src": "224:82:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "arguments": [
+                          {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "id": 83,
+                              "name": "msg",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 108,
+                              "src": "264:3:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_magic_message",
+                                "typeString": "msg"
+                              }
+                            },
+                            "id": 84,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "sender",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": null,
+                            "src": "264:10:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_address_payable",
+                              "typeString": "address payable"
+                            }
+                          },
+                          {
+                            "argumentTypes": null,
+                            "hexValue": "68656c6c6f",
+                            "id": 85,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "string",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "276:7:1",
+                            "subdenomination": null,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_stringliteral_1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8",
+                              "typeString": "literal_string \"hello\""
+                            },
+                            "value": "hello"
+                          },
+                          {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "id": 86,
+                              "name": "block",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 98,
+                              "src": "285:5:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_magic_block",
+                                "typeString": "block"
+                              }
+                            },
+                            "id": 87,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "timestamp",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": null,
+                            "src": "285:15:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_address_payable",
+                              "typeString": "address payable"
+                            },
+                            {
+                              "typeIdentifier": "t_stringliteral_1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8",
+                              "typeString": "literal_string \"hello\""
+                            },
+                            {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          ],
+                          "id": 82,
+                          "name": "Document",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 65,
+                          "src": "255:8:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_struct$_Document_$65_storage_ptr_$",
+                            "typeString": "type(struct Scribe.Document storage pointer)"
+                          }
+                        },
+                        "id": 88,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "structConstructorCall",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "255:46:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Document_$65_memory",
+                          "typeString": "struct Scribe.Document memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_struct$_Document_$65_memory",
+                          "typeString": "struct Scribe.Document memory"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 77,
+                          "name": "documents",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 70,
+                          "src": "228:9:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_Document_$65_storage_$dyn_storage_$",
+                            "typeString": "mapping(address => struct Scribe.Document storage ref[] storage ref)"
+                          }
+                        },
+                        "id": 80,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 78,
+                            "name": "msg",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 108,
+                            "src": "238:3:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_magic_message",
+                              "typeString": "msg"
+                            }
+                          },
+                          "id": 79,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "sender",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "238:10:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address_payable",
+                            "typeString": "address payable"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "228:21:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_struct$_Document_$65_storage_$dyn_storage",
+                          "typeString": "struct Scribe.Document storage ref[] storage ref"
+                        }
+                      },
+                      "id": 81,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "push",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "228:26:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_arraypush_nonpayable$_t_struct$_Document_$65_storage_$returns$_t_uint256_$",
+                        "typeString": "function (struct Scribe.Document storage ref) returns (uint256)"
+                      }
+                    },
+                    "id": 89,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "228:74:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 90,
+                  "nodeType": "ExpressionStatement",
+                  "src": "228:74:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 92,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "dictate",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 75,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "214:2:1"
+            },
+            "returnParameters": {
+              "id": 76,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "224:0:1"
+            },
+            "scope": 93,
+            "src": "198:108:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 94,
+        "src": "26:282:1"
+      }
+    ],
+    "src": "0:308:1"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/conlan/git/nft-annotations/contracts/Scribe.sol",
+    "exportedSymbols": {
+      "Scribe": [
+        93
+      ]
+    },
+    "id": 94,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 58,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".12"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 93,
+        "linearizedBaseContracts": [
+          93
+        ],
+        "name": "Scribe",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "Scribe.Document",
+            "id": 65,
+            "members": [
+              {
+                "constant": false,
+                "id": 60,
+                "name": "dictator",
+                "nodeType": "VariableDeclaration",
+                "scope": 65,
+                "src": "65:16:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 59,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "65:7:1",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 62,
+                "name": "text",
+                "nodeType": "VariableDeclaration",
+                "scope": 65,
+                "src": "85:12:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 61,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "85:7:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 64,
+                "name": "time",
+                "nodeType": "VariableDeclaration",
+                "scope": 65,
+                "src": "101:9:1",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 63,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "101:4:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Document",
+            "nodeType": "StructDefinition",
+            "scope": 93,
+            "src": "45:69:1",
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 70,
+            "name": "documents",
+            "nodeType": "VariableDeclaration",
+            "scope": 93,
+            "src": "117:48:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_Document_$65_storage_$dyn_storage_$",
+              "typeString": "mapping(address => struct Scribe.Document[])"
+            },
+            "typeName": {
+              "id": 69,
+              "keyType": {
+                "id": 66,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "126:7:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "117:31:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_Document_$65_storage_$dyn_storage_$",
+                "typeString": "mapping(address => struct Scribe.Document[])"
+              },
+              "valueType": {
+                "baseType": {
+                  "contractScope": null,
+                  "id": 67,
+                  "name": "Document",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 65,
+                  "src": "137:8:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Document_$65_storage_ptr",
+                    "typeString": "struct Scribe.Document"
+                  }
+                },
+                "id": 68,
+                "length": null,
+                "nodeType": "ArrayTypeName",
+                "src": "137:10:1",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_Document_$65_storage_$dyn_storage_ptr",
+                  "typeString": "struct Scribe.Document[]"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 73,
+              "nodeType": "Block",
+              "src": "190:5:1",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 74,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 71,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "180:2:1"
+            },
+            "returnParameters": {
+              "id": 72,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "190:0:1"
+            },
+            "scope": 93,
+            "src": "169:26:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 91,
+              "nodeType": "Block",
+              "src": "224:82:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "arguments": [
+                          {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "id": 83,
+                              "name": "msg",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 108,
+                              "src": "264:3:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_magic_message",
+                                "typeString": "msg"
+                              }
+                            },
+                            "id": 84,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "sender",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": null,
+                            "src": "264:10:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_address_payable",
+                              "typeString": "address payable"
+                            }
+                          },
+                          {
+                            "argumentTypes": null,
+                            "hexValue": "68656c6c6f",
+                            "id": 85,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "string",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "276:7:1",
+                            "subdenomination": null,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_stringliteral_1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8",
+                              "typeString": "literal_string \"hello\""
+                            },
+                            "value": "hello"
+                          },
+                          {
+                            "argumentTypes": null,
+                            "expression": {
+                              "argumentTypes": null,
+                              "id": 86,
+                              "name": "block",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 98,
+                              "src": "285:5:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_magic_block",
+                                "typeString": "block"
+                              }
+                            },
+                            "id": 87,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "timestamp",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": null,
+                            "src": "285:15:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_address_payable",
+                              "typeString": "address payable"
+                            },
+                            {
+                              "typeIdentifier": "t_stringliteral_1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8",
+                              "typeString": "literal_string \"hello\""
+                            },
+                            {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          ],
+                          "id": 82,
+                          "name": "Document",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 65,
+                          "src": "255:8:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_struct$_Document_$65_storage_ptr_$",
+                            "typeString": "type(struct Scribe.Document storage pointer)"
+                          }
+                        },
+                        "id": 88,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "structConstructorCall",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "255:46:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Document_$65_memory",
+                          "typeString": "struct Scribe.Document memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_struct$_Document_$65_memory",
+                          "typeString": "struct Scribe.Document memory"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 77,
+                          "name": "documents",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 70,
+                          "src": "228:9:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_address_$_t_array$_t_struct$_Document_$65_storage_$dyn_storage_$",
+                            "typeString": "mapping(address => struct Scribe.Document storage ref[] storage ref)"
+                          }
+                        },
+                        "id": 80,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 78,
+                            "name": "msg",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 108,
+                            "src": "238:3:1",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_magic_message",
+                              "typeString": "msg"
+                            }
+                          },
+                          "id": 79,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "sender",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "238:10:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address_payable",
+                            "typeString": "address payable"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "228:21:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_struct$_Document_$65_storage_$dyn_storage",
+                          "typeString": "struct Scribe.Document storage ref[] storage ref"
+                        }
+                      },
+                      "id": 81,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "push",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "228:26:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_arraypush_nonpayable$_t_struct$_Document_$65_storage_$returns$_t_uint256_$",
+                        "typeString": "function (struct Scribe.Document storage ref) returns (uint256)"
+                      }
+                    },
+                    "id": 89,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "228:74:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 90,
+                  "nodeType": "ExpressionStatement",
+                  "src": "228:74:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 92,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "dictate",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 75,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "214:2:1"
+            },
+            "returnParameters": {
+              "id": 76,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "224:0:1"
+            },
+            "scope": 93,
+            "src": "198:108:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 94,
+        "src": "26:282:1"
+      }
+    ],
+    "src": "0:308:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.12+commit.7709ece9.Emscripten.clang"
+  },
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x51718Df2f0EE76CB7D98749147FD1E21B379F983",
+      "transactionHash": "0x5a5444fbfdc5d829215cb4f13ddba1ddfb605d2f82a5655346db6ab0935015aa"
+    }
+  },
+  "schemaVersion": "3.0.19",
+  "updatedAt": "2019-11-22T05:20:42.296Z",
+  "networkType": "ethereum",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
