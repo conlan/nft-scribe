@@ -15,23 +15,26 @@ contract Scribe {
         string text
     );
 
+	// A recorded document which tracks the dictator, the text, and the timestamp of when it was created
 	struct Document {
 		address dictator;
 		string text;
-		uint time;
+		uint creationTime;
 	}
 
 	mapping (bytes => Document[]) public documents;
+	
 	mapping (bytes => uint) public documentsCount;
 
 	function dictate(address _tokenAddress, uint256 _tokenId, string memory _text) public {
 		// TODO check that msg.sender is owner of ERC721 at address + token Id
+		// get the document key for this address and token id
 		bytes memory documentKey = getDocumentKey(_tokenAddress, _tokenId);
-
+		// push a new document with the dictator address, message, and timestamp
 		documents[documentKey].push(Document(msg.sender, _text, block.timestamp));
-
+		// increase the documents counter for this key
 		documentsCount[documentKey]++;
-
+		// emit an event for this newly created record
 		emit Record(msg.sender, _tokenAddress, _tokenId, _text);
 	}
 
