@@ -1,5 +1,7 @@
 pragma solidity ^0.5.12;
 
+import "../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
+
 library ConcatHelper {
     function concat(bytes memory a, bytes memory b)
             internal pure returns (bytes memory) {
@@ -27,7 +29,8 @@ contract Scribe {
 	mapping (bytes => uint) public documentsCount;
 
 	function dictate(address _tokenAddress, uint256 _tokenId, string memory _text) public {
-		// TODO check that msg.sender is owner of ERC721 at address + token Id
+		// check that the message sender owns the token at _tokenAddress
+		require(ERC721(_tokenAddress).ownerOf(_tokenId) == msg.sender);
 		// get the document key for this address and token id
 		bytes memory documentKey = getDocumentKey(_tokenAddress, _tokenId);
 		// push a new document with the dictator address, message, and timestamp

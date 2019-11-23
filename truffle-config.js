@@ -9,6 +9,11 @@ module.exports = {
     },
     develop: {
       port: 8545
+    },
+    compilers: {
+      solc: {
+        version: "^0.5.12" // replace w/ the solc version you need
+      }
     }
   }
 };
