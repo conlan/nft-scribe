@@ -2,7 +2,9 @@ pragma solidity ^0.5.12;
 
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 
-// Utilities library
+/** 
+ * Utilities library
+ */
 library Utilities {
 	// concat two bytes objects
     function concat(bytes memory a, bytes memory b)
@@ -25,8 +27,11 @@ library Utilities {
 	}
 }
 
-// Contract that allows an NFT owner to dictate a message attached to the token.
-// There's no limit on the number of messages they can dictate or the length for a single message
+/*
+ * @title Contract that allows an NFT owner to dictate a message attached to the token.
+ * There's no limit on the number of messages they can dictate or the length for a single message
+ * @dev Conlan Rios
+ */
 contract Scribe {
 	// A record event that emits each time an owner dictates a message
 	event Record (
