@@ -1,6 +1,7 @@
 The MIT License (MIT)
 
 Copyright (c) 2016-2019 zOS Global Limited
+
 Copyright (c) 2019 Conlan Rios
 
 Permission is hereby granted, free of charge, to any person obtaining
