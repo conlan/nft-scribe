@@ -5,21 +5,21 @@ module.exports = async function(deployer) {
   await deployer.deploy(Scribe);
   await deployer.deploy(MyERC721, "MyERC721 Token", "MyERC721")
   
-  let erc721Instance = await MyERC721.deployed()
+  // let erc721Instance = await MyERC721.deployed()
     
-  await erc721Instance.mintUniqueTokenTo("0xD68f4893e2683BE6EfE6Aab3fca65848ACAFcC05", 0, "Test")
+  // await erc721Instance.mintUniqueTokenTo("0xD68f4893e2683BE6EfE6Aab3fca65848ACAFcC05", 0, "Test")
   
-  await erc721Instance.mintUniqueTokenTo("0xaa60e4BC5f613C3d51f6b7e6EF174B18a944fada", 1, "Test")
+  // await erc721Instance.mintUniqueTokenTo("0xaa60e4BC5f613C3d51f6b7e6EF174B18a944fada", 1, "Test")
 
-  await erc721Instance.mintUniqueTokenTo("0xD68f4893e2683BE6EfE6Aab3fca65848ACAFcC05", 2, "World")
+  // await erc721Instance.mintUniqueTokenTo("0xD68f4893e2683BE6EfE6Aab3fca65848ACAFcC05", 2, "World")
 
-  let scribeInstance = await Scribe.deployed()
+  // let scribeInstance = await Scribe.deployed()
 
-  await scribeInstance.dictate(erc721Instance.address, 0, "This is MY token")
+  // await scribeInstance.dictate(erc721Instance.address, 0, "This is MY token")
 
-  var documentKey = await scribeInstance.getDocumentKey(erc721Instance.address, 0)  
+  // var documentKey = await scribeInstance.getDocumentKey(erc721Instance.address, 0)  
   
-  await scribeInstance.dictate(erc721Instance.address, 0, "This is MY token #2")
+  // await scribeInstance.dictate(erc721Instance.address, 0, "This is MY token #2")
 };
 
 
