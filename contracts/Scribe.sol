@@ -30,7 +30,7 @@ contract Scribe {
 
 	function dictate(address _tokenAddress, uint256 _tokenId, string memory _text) public {
 		// check that the message sender owns the token at _tokenAddress
-		require(ERC721(_tokenAddress).ownerOf(_tokenId) == msg.sender);
+		require(ERC721(_tokenAddress).ownerOf(_tokenId) == msg.sender, "Sender not authorized to dictate.");
 		// get the document key for this address and token id
 		bytes memory documentKey = getDocumentKey(_tokenAddress, _tokenId);
 		// push a new document with the dictator address, message, and timestamp
