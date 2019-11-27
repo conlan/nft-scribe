@@ -12,12 +12,14 @@ import {
 import { Web3Provider } from "@ethersproject/providers";
 import { formatEther } from "@ethersproject/units";
 
-import {
-  injected,
-  network
-} from "./connectors";
+import { injected, network } from "./connectors";
 import { useEagerConnect, useInactiveListener } from "./hooks";
 import { Spinner } from "./Spinner";
+
+const ethers = require('ethers');
+
+var scribe_contract_abi = [{"inputs":[{"internalType":"address","name":"dictator","type":"address","indexed":false},{"internalType":"address","name":"tokenAddress","type":"address","indexed":false},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"text","type":"string"}],"type":"event","anonymous":false,"name":"Record"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"string","name":"_text","type":"string"}],"name":"dictate","type":"function","constant":false,"outputs":[],"payable":false,"stateMutability":"nonpayable"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"documents","type":"function","constant":true,"outputs":[{"internalType":"address","name":"dictator","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"creationTime","type":"uint256"}],"payable":false,"stateMutability":"view"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"}],"name":"documentsCount","type":"function","constant":true,"outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view"},{"constant":true,"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getDocumentKey","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}]
+var scribe_contract_address = "0x9831151655180132E6131AB35A82a5e32C149116"
 
 const connectorsByName = {
   Injected: injected,
@@ -39,7 +41,7 @@ function getErrorMessage(error) {
   }
 }
 
-function getLibrary(provider) {
+function getLibrary(provider) {  
   const library = new Web3Provider(provider);
   library.pollingInterval = 8000;
   return library;
@@ -53,8 +55,59 @@ function App() {
   );
 }
 
+var web3Context;
+
+function onSubmitClicked() { 
+  var tokenAddress =  document.getElementById('tokenAddress').value;
+  var tokenId =  document.getElementById('tokenId').value.trim()
+  var dictationMessage =  document.getElementById('message').value;
+  
+  console.log(tokenAddress)
+  console.log(tokenId)
+  console.log(dictationMessage)
+
+  
+
+  // check for valid token address
+  if (tokenAddress.length == 0) {
+    window.alert("Please provide an ERC721 token address.")
+    return;
+  } else {
+    try {
+      tokenAddress = ethers.utils.getAddress(tokenAddress)
+    } catch (error) {
+      window.alert("Please provide a valid ERC721 token address.")
+      return;
+    }
+  }
+
+  // check for valid token id
+  if (tokenId.length == 0) {
+    window.alert("Please provide an ERC721 token ID.")
+    return;
+  }
+
+  var signer = web3Context.library.getSigner();
+
+  var iface = new ethers.utils.Interface(scribe_contract_abi) 
+
+  // generate the call data for the dictation
+  var calldata = iface.functions.dictate.encode(
+    [tokenAddress, tokenId, dictationMessage]
+  )
+
+  const tx = {
+    to: scribe_contract_address,
+    data: calldata
+  }
+
+  // send the transaction
+  signer.sendTransaction(tx)
+}
+
 function MyComponent() {
-  const context = useWeb3React();
+  web3Context = useWeb3React();
+
   const {
     connector,
     library,
@@ -64,7 +117,7 @@ function MyComponent() {
     deactivate,
     active,
     error
-  } = context;
+  } = web3Context;
 
   // handle logic to recognize the connector currently being activated
   const [activatingConnector, setActivatingConnector] = React.useState();
@@ -81,271 +134,281 @@ function MyComponent() {
   useInactiveListener(!triedEager || !!activatingConnector);
 
   // set up block listener
-  const [blockNumber, setBlockNumber] = React.useState();
-  React.useEffect(() => {
-    if (library) {
-      let stale = false;
+  // const [blockNumber, setBlockNumber] = React.useState();
+  // React.useEffect(() => {
+  //   if (library) {
+  //     let stale = false;
 
-      library
-        .getBlockNumber()
-        .then(blockNumber => {
-          if (!stale) {
-            setBlockNumber(blockNumber);
-          }
-        })
-        .catch(() => {
-          if (!stale) {
-            setBlockNumber(null);
-          }
-        });
+  //     library
+  //       .getBlockNumber()
+  //       .then(blockNumber => {
+  //         if (!stale) {
+  //           setBlockNumber(blockNumber);
+  //         }
+  //       })
+  //       .catch(() => {
+  //         if (!stale) {
+  //           setBlockNumber(null);
+  //         }
+  //       });
 
-      const updateBlockNumber = blockNumber => {
-        setBlockNumber(blockNumber);
-      };
-      library.on("block", updateBlockNumber);
+  //     const updateBlockNumber = blockNumber => {
+  //       setBlockNumber(blockNumber);
+  //     };
+  //     library.on("block", updateBlockNumber);
 
-      return () => {
-        library.removeListener("block", updateBlockNumber);
-        stale = true;
-        setBlockNumber(undefined);
-      };
-    }
-  }, [library, chainId]);
+  //     return () => {
+  //       library.removeListener("block", updateBlockNumber);
+  //       stale = true;
+  //       setBlockNumber(undefined);
+  //     };
+  //   }
+  // }, [library, chainId]);
 
   // fetch eth balance of the connected account
-  const [ethBalance, setEthBalance] = React.useState();
-  React.useEffect(() => {
-    if (library && account) {
-      let stale = false;
+  // const [ethBalance, setEthBalance] = React.useState();
+  
+  // React.useEffect(() => {
+  //   if (library && account) {
+  //     let stale = false;
 
-      library
-        .getBalance(account)
-        .then(balance => {
-          if (!stale) {
-            setEthBalance(balance);
-          }
-        })
-        .catch(() => {
-          if (!stale) {
-            setEthBalance(null);
-          }
-        });
+  //     library.getBalance(account).then(balance => {
+  //         if (!stale) {
+  //           setEthBalance(balance);
+  //         }
+  //       })
+  //       .catch(() => {
+  //         if (!stale) {
+  //           setEthBalance(null);
+  //         }
+  //       });
 
-      return () => {
-        stale = true;
-        setEthBalance(undefined);
-      };
-    }
-  }, [library, account, chainId]);
+  //     return () => {
+  //       stale = true;
+  //       setEthBalance(undefined);
+  //     };
+  //   }
+  // }, [library, account, chainId]);
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1 style={{ margin: "0", textAlign: "right" }}>
-        {active ? "🟢" : error ? "🔴" : "🟠"}
-      </h1>
-      <h3
-        style={{
-          display: "grid",
-          gridGap: "1rem",
-          gridTemplateColumns: "1fr min-content 1fr",
-          maxWidth: "20rem",
-          lineHeight: "2rem",
-          margin: "auto"
-        }}
-      >
-        <span>Chain Id</span>
-        <span role="img" aria-label="chain">
-          ⛓
-        </span>
-        <span>{chainId === undefined ? "..." : chainId}</span>
-
-        <span>Block Number</span>
-        <span role="img" aria-label="numbers">
-          🔢
-        </span>
-        <span>
-          {blockNumber === undefined
-            ? "..."
-            : blockNumber === null
-            ? "Error"
-            : blockNumber.toLocaleString()}
-        </span>
-
-        <span>Account</span>
-        <span role="img" aria-label="robot">
-          🤖
-        </span>
-        <span>
-          {account === undefined
-            ? "..."
-            : account === null
-            ? "None"
-            : `${account.substring(0, 6)}...${account.substring(
-                account.length - 4
-              )}`}
-        </span>
-
-        <span>Balance</span>
-        <span role="img" aria-label="gold">
-          💰
-        </span>
-        <span>
-          {ethBalance === undefined
-            ? "..."
-            : ethBalance === null
-            ? "Error"
-            : `Ξ${parseFloat(formatEther(ethBalance)).toPrecision(4)}`}
-        </span>
-      </h3>
-      <hr style={{ margin: "2rem" }} />
-      <div
-        style={{
-          display: "grid",
-          gridGap: "1rem",
-          gridTemplateColumns: "1fr 1fr",
-          maxWidth: "20rem",
-          margin: "auto"
-        }}
-      >
-        {Object.keys(connectorsByName).map(name => {
-          const currentConnector = connectorsByName[name];
-          const activating = currentConnector === activatingConnector;
-          const connected = currentConnector === connector;
-          const disabled =
-            !triedEager || !!activatingConnector || connected || !!error;
-
-          return (
-            <button
-              style={{
-                height: "3rem",
-                borderRadius: "1rem",
-                borderColor: activating
-                  ? "orange"
-                  : connected
-                  ? "green"
-                  : "unset",
-                cursor: disabled ? "unset" : "pointer",
-                position: "relative"
-              }}
-              disabled={disabled}
-              key={name}
-              onClick={() => {
-                setActivatingConnector(currentConnector);
-                activate(connectorsByName[name]);
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "0",
-                  left: "0",
-                  height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  color: "black",
-                  margin: "0 0 0 1rem"
-                }}
-              >
-                {activating && (
-                  <Spinner
-                    color={"black"}
-                    style={{ height: "25%", marginLeft: "-1rem" }}
-                  />
-                )}
-                {connected && (
-                  <span role="img" aria-label="check">
-                    ✅
-                  </span>
-                )}
-              </div>
-              {name}
-            </button>
-          );
-        })}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center"
-        }}
-      >
-        {(active || error) && (
-          <button
-            style={{
-              height: "3rem",
-              marginTop: "2rem",
-              borderRadius: "1rem",
-              borderColor: "red",
-              cursor: "pointer"
-            }}
-            onClick={() => {
-              deactivate();
-            }}
-          >
-            Deactivate
-          </button>
-        )}
-
-        {!!error && (
-          <h4 style={{ marginTop: "1rem", marginBottom: "0" }}>
-            {getErrorMessage(error)}
-          </h4>
-        )}
-      </div>
-
-      <hr style={{ margin: "2rem" }} />
-
-      <div
-        style={{
-          display: "grid",
-          gridGap: "1rem",
-          gridTemplateColumns: "fit-content",
-          maxWidth: "20rem",
-          margin: "auto"
-        }}
-      >
-        {!!(library && account) && (
-          <button
-            style={{
-              height: "3rem",
-              borderRadius: "1rem",
-              cursor: "pointer"
-            }}
-            onClick={() => {
-              library
-                .getSigner(account)
-                .signMessage("👋")
-                .then(signature => {
-                  window.alert(`Success!\n\n${signature}`);
-                })
-                .catch(error => {
-                  window.alert(
-                    "Failure!" +
-                      (error && error.message ? `\n\n${error.message}` : "")
-                  );
-                });
-            }}
-          >
-            Sign Message
-          </button>
-        )}
-        {!!(connector === network && chainId) && (
-          <button
-            style={{
-              height: "3rem",
-              borderRadius: "1rem",
-              cursor: "pointer"
-            }}
-            onClick={() => {
-              connector.changeChainId(chainId === 1 ? 4 : 1);
-            }}
-          >
-            Switch Networks
-          </button>
-        )}
-      </div>
+    <div>
+      <p>Dictate your message!</p>
+      <p>ERC721 Token address:</p>
+      <input id="tokenAddress" placeholder="0x..."/>
+      <p>ERC721 Token ID:</p>
+      <input id="tokenId" placeholder="0, 1, 2, 3..."/>
+      <p>Message:</p>
+      <input id="message" placeholder="May it be written..."/>
+      <p/>
+      <button onClick={onSubmitClicked}>Submit</button>
     </div>
+    // <div style={{ padding: "1rem" }}>
+    //   <h1 style={{ margin: "0", textAlign: "right" }}>
+    //     {active ? "🟢" : error ? "🔴" : "🟠"}
+    //   </h1>
+    //   <h3
+    //     style={{
+    //       display: "grid",
+    //       gridGap: "1rem",
+    //       gridTemplateColumns: "1fr min-content 1fr",
+    //       maxWidth: "20rem",
+    //       lineHeight: "2rem",
+    //       margin: "auto"
+    //     }}
+    //   >
+    //     <span>Chain Id</span>
+    //     <span role="img" aria-label="chain">
+    //       ⛓
+    //     </span>
+    //     <span>{chainId === undefined ? "..." : chainId}</span>
+
+    //     <span>Block Number</span>
+    //     <span role="img" aria-label="numbers">
+    //       🔢
+    //     </span>
+    //     <span>
+    //       {blockNumber === undefined
+    //         ? "..."
+    //         : blockNumber === null
+    //         ? "Error"
+    //         : blockNumber.toLocaleString()}
+    //     </span>
+
+    //     <span>Account</span>
+    //     <span role="img" aria-label="robot">
+    //       🤖
+    //     </span>
+    //     <span>
+    //       {account === undefined
+    //         ? "..."
+    //         : account === null
+    //         ? "None"
+    //         : `${account.substring(0, 6)}...${account.substring(
+    //             account.length - 4
+    //           )}`}
+    //     </span>
+
+    //     <span>Balance</span>
+    //     <span role="img" aria-label="gold">
+    //       💰
+    //     </span>
+    //     <span>
+    //       {ethBalance === undefined
+    //         ? "..."
+    //         : ethBalance === null
+    //         ? "Error"
+    //         : `Ξ${parseFloat(formatEther(ethBalance)).toPrecision(4)}`}
+    //     </span>
+    //   </h3>
+    //   <hr style={{ margin: "2rem" }} />
+    //   <div
+    //     style={{
+    //       display: "grid",
+    //       gridGap: "1rem",
+    //       gridTemplateColumns: "1fr 1fr",
+    //       maxWidth: "20rem",
+    //       margin: "auto"
+    //     }}
+    //   >
+    //     {Object.keys(connectorsByName).map(name => {
+    //       const currentConnector = connectorsByName[name];
+    //       const activating = currentConnector === activatingConnector;
+    //       const connected = currentConnector === connector;
+    //       const disabled =
+    //         !triedEager || !!activatingConnector || connected || !!error;
+
+    //       return (
+    //         <button
+    //           style={{
+    //             height: "3rem",
+    //             borderRadius: "1rem",
+    //             borderColor: activating
+    //               ? "orange"
+    //               : connected
+    //               ? "green"
+    //               : "unset",
+    //             cursor: disabled ? "unset" : "pointer",
+    //             position: "relative"
+    //           }}
+    //           disabled={disabled}
+    //           key={name}
+    //           onClick={() => {
+    //             setActivatingConnector(currentConnector);
+    //             activate(connectorsByName[name]);
+    //           }}
+    //         >
+    //           <div
+    //             style={{
+    //               position: "absolute",
+    //               top: "0",
+    //               left: "0",
+    //               height: "100%",
+    //               display: "flex",
+    //               alignItems: "center",
+    //               color: "black",
+    //               margin: "0 0 0 1rem"
+    //             }}
+    //           >
+    //             {activating && (
+    //               <Spinner
+    //                 color={"black"}
+    //                 style={{ height: "25%", marginLeft: "-1rem" }}
+    //               />
+    //             )}
+    //             {connected && (
+    //               <span role="img" aria-label="check">
+    //                 ✅
+    //               </span>
+    //             )}
+    //           </div>
+    //           {name}
+    //         </button>
+    //       );
+    //     })}
+    //   </div>
+    //   <div
+    //     style={{
+    //       display: "flex",
+    //       flexDirection: "column",
+    //       alignItems: "center"
+    //     }}
+    //   >
+    //     {(active || error) && (
+    //       <button
+    //         style={{
+    //           height: "3rem",
+    //           marginTop: "2rem",
+    //           borderRadius: "1rem",
+    //           borderColor: "red",
+    //           cursor: "pointer"
+    //         }}
+    //         onClick={() => {
+    //           deactivate();
+    //         }}
+    //       >
+    //         Deactivate
+    //       </button>
+    //     )}
+
+    //     {!!error && (
+    //       <h4 style={{ marginTop: "1rem", marginBottom: "0" }}>
+    //         {getErrorMessage(error)}
+    //       </h4>
+    //     )}
+    //   </div>
+
+    //   <hr style={{ margin: "2rem" }} />
+
+    //   <div
+    //     style={{
+    //       display: "grid",
+    //       gridGap: "1rem",
+    //       gridTemplateColumns: "fit-content",
+    //       maxWidth: "20rem",
+    //       margin: "auto"
+    //     }}
+    //   >
+    //     {!!(library && account) && (
+    //       <button
+    //         style={{
+    //           height: "3rem",
+    //           borderRadius: "1rem",
+    //           cursor: "pointer"
+    //         }}
+    //         onClick={() => {
+    //           library
+    //             .getSigner(account)
+    //             .signMessage("👋")
+    //             .then(signature => {
+    //               window.alert(`Success!\n\n${signature}`);
+    //             })
+    //             .catch(error => {
+    //               window.alert(
+    //                 "Failure!" +
+    //                   (error && error.message ? `\n\n${error.message}` : "")
+    //               );
+    //             });
+    //         }}
+    //       >
+    //         Sign Message
+    //       </button>
+    //     )}
+    //     {!!(connector === network && chainId) && (
+    //       <button
+    //         style={{
+    //           height: "3rem",
+    //           borderRadius: "1rem",
+    //           cursor: "pointer"
+    //         }}
+    //         onClick={() => {
+    //           connector.changeChainId(chainId === 1 ? 4 : 1);
+    //         }}
+    //       >
+    //         Switch Networks
+    //       </button>
+    //     )}
+    //   </div>
+    // </div>
   );
 }
 
