@@ -15,14 +15,19 @@ import './index.css';
 
 import {
   injected,
-  // network
+  network
 } from "./connectors";
 import { useEagerConnect, useInactiveListener } from "./hooks";
 
 const ethers = require('ethers');
 
 const SCRIBE_CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"dictator","type":"address","indexed":false},{"internalType":"address","name":"tokenAddress","type":"address","indexed":false},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"text","type":"string"}],"type":"event","anonymous":false,"name":"Record"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"string","name":"_text","type":"string"}],"name":"dictate","type":"function","constant":false,"outputs":[],"payable":false,"stateMutability":"nonpayable"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"documents","type":"function","constant":true,"outputs":[{"internalType":"address","name":"dictator","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"creationTime","type":"uint256"}],"payable":false,"stateMutability":"view"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"}],"name":"documentsCount","type":"function","constant":true,"outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view"},{"constant":true,"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getDocumentKey","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}]
-const SCRIBE_CONTRACT_ADDRESS = "0x9831151655180132E6131AB35A82a5e32C149116"
+
+// const SCRIBE_CONTRACT_ADDRESS = "0x9831151655180132E6131AB35A82a5e32C149116" // Ropsten
+const SCRIBE_CONTRACT_ADDRESS = "0x284Dc68Afe4b30793acb7507a0Ae029d91bf698e" // Goerli
+// const SCRIBE_CONTRACT_ADDRESS = "..." // Mainnet
+
+
 
 const LoadingState = {
     UNLOADED: 0,
@@ -33,23 +38,23 @@ const LoadingState = {
 
 const connectorsByName = {
   Injected: injected,
-  // Network: network
+  Network: network
 };
 
-function getErrorMessage(error) {
-  if (error instanceof NoEthereumProviderError) {
-    return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";
-  } else if (error instanceof UnsupportedChainIdError) {
-    return "You're connected to an unsupported network.";
-  } else if (
-    error instanceof UserRejectedRequestErrorInjected
-  ) {
-    return "Please authorize this website to access your Ethereum account.";
-  } else {
-    console.error(error);
-    return "An unknown error occurred. Check the console for more details.";
-  }
-}
+// function getErrorMessage(error) {
+//   if (error instanceof NoEthereumProviderError) {
+//     return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";
+//   } else if (error instanceof UnsupportedChainIdError) {
+//     return "You're connected to an unsupported network.";
+//   } else if (
+//     error instanceof UserRejectedRequestErrorInjected
+//   ) {
+//     return "Please authorize this website to access your Ethereum account.";
+//   } else {
+//     console.error(error);
+//     return "An unknown error occurred. Check the console for more details.";
+//   }
+// }
 
 function getLibrary(provider) {
   const library = new Web3Provider(provider);
@@ -97,13 +102,14 @@ function MyComponent() {
   }
 
   async function loadToken() {
-    setLoadingState(1)
-
-    let provider = ethers.getDefaultProvider('ropsten');
+    setLoadingState(LoadingState.LOADING_RECORDS)
+    
+    let provider = ethers.getDefaultProvider(chainId);
 
     var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
 
-    var documentKey = await contract.getDocumentKey("0xd58E411CCe2019D021BC48e229115CC7A3CA2b44", 1)
+    // var documentKey = await contract.getDocumentKey("0xd58E411CCe2019D021BC48e229115CC7A3CA2b44", 1)
+    var documentKey = await contract.getDocumentKey("0x6Da7DD22A9c1B6bC7b2Ba9A540A37EC786E30eA7", 0)
 
     var numDocuments = (await contract.documentsCount(documentKey)).toString()
 
@@ -214,7 +220,7 @@ function MyComponent() {
           (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
         }        
 
-        {!!(library && account && (loadingState != LoadingState.LOADING_RECORDS)) && (
+        {!!(library && account) && (loadingState != LoadingState.LOADING_RECORDS) && (
           <button
             style={{
               height: "3rem",
@@ -226,7 +232,11 @@ function MyComponent() {
             }}
           >Load Token</button>
         )}
-
+        {
+          (!!(library) == false) && (
+          <p>TODO - button to connect to Web3</p>
+          )
+        }
         {
           (loadingState == LoadingState.LOADED) && createDocumentTable()
         }
@@ -237,19 +247,17 @@ function MyComponent() {
 
       <br/>
 
-      <hr/>
-            
-      <br/>
-        
-          <span>Github | @conlan | ThanksForTheCoffee.eth </span>
+      <hr/>            
+        <p><i>The Scribe</i> is a ...</p>        
+        <p>Github | Contract | @conlan | ThanksForTheCoffee.eth </p>
+        // <span>Chain Id</span>
+// <span role="img" aria-label="chain">
+  ⛓
+</span>
+<span>{chainId === undefined ? "..." : chainId}        </span>
     </div>
   );
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
-// <span>Chain Id</span>
-// <span role="img" aria-label="chain">
-//   ⛓
-// </span>
-// <span>{chainId === undefined ? "..." : chainId}        </span>
