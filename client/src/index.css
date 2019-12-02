@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background-color: #222;
 }
 
 code {
@@ -14,4 +16,12 @@ code {
 
 .loading-spinner {
   width: 25px;
+}
+
+p {
+	color: #909090;
+}
+
+p.header {
+	color: #FFFFFF;
 }

@@ -88,6 +88,8 @@ function MyComponent() {
     tokenDocuments.forEach(function(record) {
       var creationTime = record.creationTime.toString();
 
+      // TODO convert creationTime to relative
+      // TODO automatically insert hyperlinks 
       documentTable.push(<p key={creationTime}>{record.dictator} - {record.text} - {creationTime} </p>)
     })
 
@@ -107,11 +109,19 @@ function MyComponent() {
 
     var documents = []
 
-    for (var i = 0; i < numDocuments; i++) {
-      console.log("Fetching " + i )
+    // TODO cache ENS names to avoid repeats
+    // use 0x6fC21092DA55B392b045eD78F4732bff3C580e2c to test
+    for (var i = 0; i < numDocuments; i++) {      
       var record = await contract.documents(documentKey, i)
 
-      documents.splice(0, 0, record)    
+      console.log(record.dictator)
+
+      var checksumAddress = ethers.utils.getAddress("0x6fC21092DA55B392b045eD78F4732bff3C580e2c")
+      
+      // look up if there's an ENS name for this address
+      record.ensName = await provider.lookupAddress(checksumAddress)
+
+      documents.splice(0, 0, record)      
     }
 
     setTokenDocuments(documents)
@@ -192,28 +202,19 @@ function MyComponent() {
 
   return (
     <div style={{ padding: "1rem" }}>
-        ERC721 Token address:
+        <p className="header"><b>ERC721 Token address:</b></p>
           <input id="tokenAddress" placeholder="0x..."/>
-        <br/>
-        <br/>
-        ERC721 Token ID:
+        
+        <p className="header"><b>ERC721 Token ID:</b></p>
           <input id="tokenId" placeholder="0, 1, 2, 3..."/>      
 
-      <div
-        style={{
-          display: "grid",
-          gridGap: "1rem",
-          gridTemplateColumns: "fit-content",
-          maxWidth: "20rem",
-          margin: "auto"
-        }}
-      >
-
+      <div>
+        <br/>
         {
           (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
-        }
-        
-        {!!(library && account && (loadingState == LoadingState.UNLOADED)) && (
+        }        
+
+        {!!(library && account && (loadingState != LoadingState.LOADING_RECORDS)) && (
           <button
             style={{
               height: "3rem",
@@ -222,22 +223,8 @@ function MyComponent() {
             }}
             onClick={() => {
               loadToken();
-              // library
-              //   .getSigner(account)
-              //   .signMessage("👋")
-              //   .then(signature => {
-              //     window.alert(`Success!\n\n${signature}`);
-              //   })
-              //   .catch(error => {
-              //     window.alert(
-              //       "Failure!" +
-              //         (error && error.message ? `\n\n${error.message}` : "")
-              //     );
-              //   });
             }}
-          >
-            Load Token Records
-          </button>
+          >Load Token</button>
         )}
 
         {
@@ -248,27 +235,21 @@ function MyComponent() {
         
       </div>
 
-      <hr style={{ margin: "2rem" }} />
-      <div
-        style={{
-          display: "grid",
-          gridGap: "1rem",
-          gridTemplateColumns: "1fr 1fr",
-          maxWidth: "20rem",
-          margin: "auto"
-        }}
-      >
-        
-      </div>
-      
       <br/>
-        <span>Chain Id</span>
-          <span role="img" aria-label="chain">
-            ⛓
-          </span>
-          <span>{chainId === undefined ? "..." : chainId}</span>      
+
+      <hr/>
+            
+      <br/>
+        
+          <span>Github | @conlan | ThanksForTheCoffee.eth </span>
     </div>
   );
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));
+
+// <span>Chain Id</span>
+// <span role="img" aria-label="chain">
+//   ⛓
+// </span>
+// <span>{chainId === undefined ? "..." : chainId}        </span>
