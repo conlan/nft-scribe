@@ -11,6 +11,7 @@ import {
 } from "@web3-react/injected-connector";
 import { Web3Provider } from "@ethersproject/providers";
 import { formatEther } from "@ethersproject/units";
+import './index.css';
 
 import {
   injected,
@@ -22,6 +23,13 @@ const ethers = require('ethers');
 
 const SCRIBE_CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"dictator","type":"address","indexed":false},{"internalType":"address","name":"tokenAddress","type":"address","indexed":false},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"text","type":"string"}],"type":"event","anonymous":false,"name":"Record"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"string","name":"_text","type":"string"}],"name":"dictate","type":"function","constant":false,"outputs":[],"payable":false,"stateMutability":"nonpayable"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"documents","type":"function","constant":true,"outputs":[{"internalType":"address","name":"dictator","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"creationTime","type":"uint256"}],"payable":false,"stateMutability":"view"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"}],"name":"documentsCount","type":"function","constant":true,"outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view"},{"constant":true,"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getDocumentKey","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}]
 const SCRIBE_CONTRACT_ADDRESS = "0x9831151655180132E6131AB35A82a5e32C149116"
+
+const LoadingState = {
+    UNLOADED: 0,
+    LOADING_RECORDS: 1,
+    LOADED: 2,
+    SUBMITTING_DICTATION: 3
+}
 
 const connectorsByName = {
   Injected: injected,
@@ -70,7 +78,25 @@ function MyComponent() {
     error
   } = context;
 
+  const [tokenDocuments, setTokenDocuments] = React.useState([]);
+  
+  const [loadingState, setLoadingState] = React.useState(LoadingState.UNLOADED)
+
+  function createDocumentTable() {
+    var documentTable = []
+
+    tokenDocuments.forEach(function(record) {
+      var creationTime = record.creationTime.toString();
+
+      documentTable.push(<p key={creationTime}>{record.dictator} - {record.text} - {creationTime} </p>)
+    })
+
+    return documentTable;
+  }
+
   async function loadToken() {
+    setLoadingState(1)
+
     let provider = ethers.getDefaultProvider('ropsten');
 
     var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
@@ -79,11 +105,17 @@ function MyComponent() {
 
     var numDocuments = (await contract.documentsCount(documentKey)).toString()
 
+    var documents = []
+
     for (var i = 0; i < numDocuments; i++) {
+      console.log("Fetching " + i )
       var record = await contract.documents(documentKey, i)
 
-      console.log(record.text)
+      documents.splice(0, 0, record)    
     }
+
+    setTokenDocuments(documents)
+    setLoadingState(2)
   }
 
   // handle logic to recognize the connector currently being activated
@@ -176,7 +208,12 @@ function MyComponent() {
           margin: "auto"
         }}
       >
-        {!!(library && account) && (
+
+        {
+          (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
+        }
+        
+        {!!(library && account && (loadingState == LoadingState.UNLOADED)) && (
           <button
             style={{
               height: "3rem",
@@ -202,6 +239,10 @@ function MyComponent() {
             Load Token Records
           </button>
         )}
+
+        {
+          (loadingState == LoadingState.LOADED) && createDocumentTable()
+        }
 
         
         
