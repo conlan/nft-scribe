@@ -207,19 +207,23 @@ function MyComponent() {
   }, [library, account, chainId]);
 
   return (
-    <div style={{ padding: "1rem" }}>
-        <p className="header"><b>ERC721 Token address:</b></p>
-          <input id="tokenAddress" placeholder="0x..."/>
+    <div>
+      <p><i>The Scribe</i> is a ...</p>
+      <hr/>
+        <div className="heroImage">
+          <img src="scribe.jpg"/>
+        </div>
+        <div className="inputFields">
+          <p className="header"><b>ERC721 Token address:</b></p>
+            <input id="tokenAddress" placeholder="0x..."/>
+          
+          <p className="header"><b>ERC721 Token ID:</b></p>
+            <input id="tokenId" placeholder="0, 1, 2, 3..."/>
         
-        <p className="header"><b>ERC721 Token ID:</b></p>
-          <input id="tokenId" placeholder="0, 1, 2, 3..."/>      
-
-      <div>
-        <br/>
         {
           (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
         }        
-
+        <br/>
         {!!(library && account) && (loadingState != LoadingState.LOADING_RECORDS) && (
           <button
             style={{
@@ -237,18 +241,20 @@ function MyComponent() {
           <p>TODO - button to connect to Web3</p>
           )
         }
-        {
-          (loadingState == LoadingState.LOADED) && createDocumentTable()
-        }
+        
 
         
         
       </div>
+            
+
+        {
+          (loadingState == LoadingState.LOADED) && createDocumentTable()
+        }
 
       <br/>
 
-      <hr/>            
-        <p><i>The Scribe</i> is a ...</p>        
+      <hr/>        
         <p>Github | Contract | @conlan | ThanksForTheCoffee.eth </p>
         // <span>Chain Id</span>
 // <span role="img" aria-label="chain">
