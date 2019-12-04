@@ -108,6 +108,7 @@ function MyComponent() {
 
     var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
 
+    // TODO get token id and address from input
     // var documentKey = await contract.getDocumentKey("0xd58E411CCe2019D021BC48e229115CC7A3CA2b44", 1)
     var documentKey = await contract.getDocumentKey("0x6Da7DD22A9c1B6bC7b2Ba9A540A37EC786E30eA7", 0)
 
@@ -208,10 +209,10 @@ function MyComponent() {
 //<img className="nft-overlay" src="sampleNFT.png"/>
   return (
     <div>
-      <p><i>The Scribe</i> is a ...</p>
+      <label><i>NFT Scribe</i> is a ...</label>
       <hr/>
-        <div className="center-div">
-          <div className="header-images">
+        <div className="center-header-images-container">
+          <div className="inner-header-images">
             <img className="hero-image" src="scribe.jpg"/>
             
             <img className="nft-overlay" src="nft_outline.png"/>
@@ -219,54 +220,43 @@ function MyComponent() {
           </div>
           </div>
         <br/>
-        <div className="input-section">
-          <p className="header"><b>ERC721 Token address:</b></p>
-            <input id="tokenAddress" placeholder="0x..."/>
-          
-          <p className="header"><b>ERC721 Token ID:</b></p>
-            <input id="tokenId" placeholder="0, 1, 2, 3..."/>
         
-        {
-          (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
-        }        
-        <br/>
-        {!!(library && account) && (loadingState != LoadingState.LOADING_RECORDS) && (
-          <button
-            style={{
-              height: "3rem",
-              borderRadius: "1rem",
-              cursor: "pointer"
-            }}
-            onClick={() => {
-              loadToken();
-            }}
-          >Load Token</button>
-        )}
-        {
-          (!!(library) == false) && (
-          <p>TODO - button to connect to Web3</p>
-          )
-        }
-        
-
-        
-        
-      </div>
+          <div className="input-section">
+            <label><b>Token Address</b></label>
+              <input value="0x6fC21092DA55B392b045eD78F4732bff3C580e2c" id="tokenAddress" placeholder="0x..."/>
             
+            <label><b>Token ID</b></label>
+              <input id="tokenId" placeholder="0, 1, 2, 3..."/>
+          
+            <div className="loading-spinner-container">
+              {
+                (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
+              }
+            {!!(library && account) && (loadingState != LoadingState.LOADING_RECORDS) && (
+              <button onClick={() => {
+                  loadToken();
+                }}
+              >Load ERC721</button>
+            )}
+            {
+              (!!(library) == false) && (
+              <p>TODO - button to connect to Web3</p>
+              )
+            }
+            </div>
+          </div>
 
-        {
-          (loadingState == LoadingState.LOADED) && createDocumentTable()
-        }
-
-      <br/>
+            
+        <div>
+          {
+            (loadingState == LoadingState.LOADED) && createDocumentTable()
+          }
+        </div>
 
       <hr/>        
-        <p>Github | Contract | @conlan | ThanksForTheCoffee.eth </p>
-        // <span>Chain Id</span>
-// <span role="img" aria-label="chain">
-  ⛓
-</span>
-<span>{chainId === undefined ? "..." : chainId}        </span>
+        <label>Github | Contract | @conlan | ThanksForTheCoffee.eth </label>
+        <span>⛓</span>
+<label>{chainId === undefined ? "..." : chainId}        </label>
     </div>
   );
 }
