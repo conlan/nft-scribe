@@ -98,11 +98,17 @@ function MyComponent() {
       // TODO automatically insert hyperlinks 
       var dictation = record.text;
 
-      var recordLink = "https://etherscan.io/address/" + record.dictator;
+      var networkName = getNetworkName(chainId)
+
+      if (networkName === "Mainnet") {
+        var recordLink = "https://etherscan.io/address/" + record.dictator;
+      } else {
+        var recordLink = "https://" + networkName + ".etherscan.io/address/" + record.dictator;        
+      }
 
       if (record.ensName === null) {
         documentTable.push(<div key={dictation + record.creationTime.toString()}>
-          <label><a href={recordLink}>{record.dictator}</a>: "{dictation}" {humanReadableTime} </label>
+          <label><a href={recordLink} target="_blank">{record.dictator}</a>: "{dictation}" {humanReadableTime} </label>
         </div>)
       } else {
         documentTable.push(<div key={record.creationTime.toString()}>
