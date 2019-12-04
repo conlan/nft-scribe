@@ -95,7 +95,7 @@ function MyComponent() {
 
       // TODO convert creationTime to relative
       // TODO automatically insert hyperlinks 
-      documentTable.push(<p key={creationTime}>{record.dictator} - {record.text} - {creationTime} </p>)
+      documentTable.push(<label key={creationTime}>{record.dictator} - {record.text} - {creationTime} </label>)
     })
 
     return documentTable;
@@ -220,38 +220,39 @@ function MyComponent() {
           </div>
           </div>
         <br/>
-        
-          <div className="input-section">
-            <label><b>Token Address</b></label>
-              <input value="0x6fC21092DA55B392b045eD78F4732bff3C580e2c" id="tokenAddress" placeholder="0x..."/>
+          <div>
+            <div className="input-section">
+              <label><b>Token Address</b></label>
+                <input value="0x6fC21092DA55B392b045eD78F4732bff3C580e2c" id="tokenAddress" placeholder="0x..."/>
+              
+              <label><b>Token ID</b></label>
+                <input id="tokenId" placeholder="0, 1, 2, 3..."/>
             
-            <label><b>Token ID</b></label>
-              <input id="tokenId" placeholder="0, 1, 2, 3..."/>
-          
-            <div className="loading-spinner-container">
+              <div className="loading-spinner-container">
+                {
+                  (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
+                }
+              {!!(library && account) && (loadingState != LoadingState.LOADING_RECORDS) && (
+                <button onClick={() => {
+                    loadToken();
+                  }}
+                >Load ERC721</button>
+              )}
               {
-                (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
+                (!!(library) == false) && (
+                <p>TODO - button to connect to Web3</p>
+                )
               }
-            {!!(library && account) && (loadingState != LoadingState.LOADING_RECORDS) && (
-              <button onClick={() => {
-                  loadToken();
-                }}
-              >Load ERC721</button>
-            )}
-            {
-              (!!(library) == false) && (
-              <p>TODO - button to connect to Web3</p>
-              )
-            }
+              </div>
             </div>
-          </div>
 
-            
-        <div>
-          {
-            (loadingState == LoadingState.LOADED) && createDocumentTable()
-          }
-        </div>
+                      
+            <div className="document-table">
+              {
+                (loadingState == LoadingState.LOADED) && createDocumentTable()
+              }
+            </div>        
+          </div>
 
       <hr/>        
         <label>Github | Contract | @conlan | ThanksForTheCoffee.eth </label>

@@ -37,10 +37,15 @@ label {
 }
 
 .input-section {
-width:50%;
-  /*justify-content: center;*/
-  /*display: flex;*/
-  /*align-items: center;*/
+  position: relative;
+  margin: 0 auto;
+  width: 50%; 
+}
+
+.document-table {
+ position: relative;
+  margin: 0 auto;
+  width: 50%; 
 }
 
 .hero-image {
