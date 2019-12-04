@@ -59,14 +59,18 @@ label {
   width:50%;
 }
 
-.loading-spinner-container {
-  height:50px;
-  padding: 12px 0px;
+.loading-spinner {
+  position:absolute;
+  bottom:16%;
+  right:15%;
+  
+  width:20%;
+  height:auto;
 }
 
-.loading-spinner {
-  height:100%;
-  width:auto;
+.load-token-container {
+  height:50px;
+  padding: 12px 0px;
 }
 
 .center-header-images-container {

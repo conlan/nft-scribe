@@ -91,16 +91,16 @@ function MyComponent() {
     var documentTable = []
 
     tokenDocuments.forEach(function(record) {
-      var creationTime = record.creationTime.toString();
+      var humanReadableTime = convertTimestampToHumanReadable(record.creationTime)
 
-      // TODO convert creationTime to relative
       // TODO automatically insert hyperlinks 
-      documentTable.push(<label key={creationTime}>{record.dictator} - {record.text} - {creationTime} </label>)
+      documentTable.push(<label key={humanReadableTime}>{record.dictator} - {record.text} - {humanReadableTime} </label>)
     })
 
     return documentTable;
   }
 
+  // 'https://api.opensea.io/api/v1/assets?token_ids=5477&asset_contract_address=0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0'
   function getTokenAddress() {
     var tokenAddressField = document.getElementById("tokenAddress")
 
@@ -113,6 +113,10 @@ function MyComponent() {
     } catch (e) {
       return null;
     }    
+  }
+
+  function convertTimestampToHumanReadable(timestamp) {
+    return "2hr ago"
   }
 
   function getTokenID() {
@@ -149,10 +153,7 @@ function MyComponent() {
 
     var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
 
-
-    // TODO get token id and address from input
-    // var documentKey = await contract.getDocumentKey("0xd58E411CCe2019D021BC48e229115CC7A3CA2b44", 1)
-    var documentKey = await contract.getDocumentKey("0x6Da7DD22A9c1B6bC7b2Ba9A540A37EC786E30eA7", 0)
+    var documentKey = await contract.getDocumentKey(tokenAddress, tokenId)
 
     var numDocuments = (await contract.documentsCount(documentKey)).toString()
 
@@ -176,6 +177,8 @@ function MyComponent() {
 
     setLoadingState(LoadingState.LOADED)
   }
+
+  const [NFTSamplePreviewURL, setNFTSamplePreviewURL] = React.useState("");
 
   // handle logic to recognize the connector currently being activated
   const [activatingConnector, setActivatingConnector] = React.useState();
@@ -248,7 +251,7 @@ function MyComponent() {
       };
     }
   }, [library, account, chainId]);
-//<img className="nft-overlay" src="sampleNFT.png"/>
+
   return (
     <div>
       <label><i>NFT Scribe</i> is a ...</label>
@@ -257,8 +260,15 @@ function MyComponent() {
           <div className="inner-header-images">
             <img className="hero-image" src="scribe.jpg" alt="Scribe image"/>
             
-            <img className="nft-overlay" src="nft_outline.png"/>
+            {(NFTSamplePreviewURL.length === 0) && (<img className="nft-overlay" src="nft_outline.png"/>)}
+
+            {
+              (loadingState === LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
+            }
+
+            {(NFTSamplePreviewURL.length !== 0) && (<img className="nft-overlay" src={NFTSamplePreviewURL}/>)}
             
+
           </div>
           </div>
         <br/>
@@ -270,21 +280,18 @@ function MyComponent() {
               <label><b>Token ID</b></label>
                 <input id="tokenId" type="number" placeholder="0, 1, 2, 3..." min="1" defaultValue="0"/>
             
-              <div className="loading-spinner-container">
+              <div className="load-token-container">
+                {!!(library && account) && (loadingState !== LoadingState.LOADING_RECORDS) && (
+                  <button onClick={() => {
+                      loadToken();
+                    }}
+                  ><b>Load ERC721</b></button>
+                )}
                 {
-                  (loadingState === LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
+                  (!!(library) === false) && (
+                  <p>TODO - button to connect to Web3</p>
+                  )
                 }
-              {!!(library && account) && (loadingState !== LoadingState.LOADING_RECORDS) && (
-                <button onClick={() => {
-                    loadToken();
-                  }}
-                >Load ERC721</button>
-              )}
-              {
-                (!!(library) === false) && (
-                <p>TODO - button to connect to Web3</p>
-                )
-              }
               </div>
             </div>
 
@@ -306,3 +313,5 @@ function MyComponent() {
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
+
+// Loading gif https://giphy.com/stickers/geometric-heysp-illustrated-geometry-c6XT7hN1iSuUoNxD1b
