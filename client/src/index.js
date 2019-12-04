@@ -99,12 +99,12 @@ function MyComponent() {
       var dictation = record.text;
 
       if (record.ensName === null) {
-        documentTable.push(<div key={record.creationTime.toString()}>
-          <label>{record.dictator}: "{dictation}" ({humanReadableTime}) </label>
+        documentTable.push(<div key={dictation + record.creationTime.toString()}>
+          <label>{record.dictator}: "{dictation}" {humanReadableTime} </label>
         </div>)
       } else {
         documentTable.push(<div key={record.creationTime.toString()}>
-          <label>{record.ensName}: "{dictation}" ({humanReadableTime}) </label>
+          <label>{record.ensName}: "{dictation}" {humanReadableTime} </label>
         </div>)
       }
       
@@ -112,7 +112,7 @@ function MyComponent() {
     })
 
     if (documentTable.length === 0) {
-      documentTable.push(<label>No records found for this token.</label>)
+      documentTable.push(<label key="0">No records found for this token.</label>)
     }
 
     return documentTable;
@@ -121,12 +121,13 @@ function MyComponent() {
   function convertTimestampToHumanReadable(timestamp) {
     var nowSeconds = new Date().getTime() / 1000;
     
-    var elapsedSeconds = nowSeconds - timestamp;
+    var elapsedSeconds = Math.floor(nowSeconds - timestamp)
 
     var minutes = Math.floor(elapsedSeconds / 60)
     var hours = Math.floor(minutes / 60)
     var days = Math.floor(hours / 24)
 
+    // TODO insert parentheses
     if (days > 0) {
       return days + " days ago";
     } else if (hours > 0) {
@@ -135,9 +136,11 @@ function MyComponent() {
       return minutes + " min ago";
     } else if (elapsedSeconds > 0) {
       return elapsedSeconds + " seconds ago";
+    } else {
+      console.log(elapsedSeconds)
     }
     
-    return timestamp.toString()
+    return ""
   }
 
   function getDictation() {
@@ -207,13 +210,23 @@ function MyComponent() {
 
     var signer = library.getSigner(account);
 
-    signer.sendTransaction(tx)
-
     // send the transaction
-    // signer.sendTransaction(tx)
-    
+    try {
+      await signer.sendTransaction(tx).then((tx) => {
+        
+        waitForTransaction(tx)       
+      });
+    } catch (error) {
+      setLoadingState(LoadingState.LOADED)
+    }
+  }
 
-    // await contract.dictate(currentTokenAddress, currentTokenId, "Test")
+  async function waitForTransaction(tx) {
+    var provider = ethers.getDefaultProvider(chainId);
+
+    await provider.waitForTransaction(tx.hash)
+
+    loadToken()
   }
 
   async function loadToken() {
@@ -252,7 +265,6 @@ function MyComponent() {
       
       // look up if there's an ENS name for this address
       record.ensName = await provider.lookupAddress(checksumAddress)
-      console.log(record.ensName)
 
       documents.splice(0, 0, record)      
     }
@@ -406,7 +418,7 @@ function MyComponent() {
           </div>
 
       <hr/>        
-        <label>Github | Contract | @conlan | ThanksForTheCoffee.eth </label>
+        <label>Github | Mainnet |  Ropsten | Goerli | @conlan | ThanksForTheCoffee.eth </label>
         <span>⛓</span>
 <label>{chainId === undefined ? "..." : chainId}        </label>
     </div>
