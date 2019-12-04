@@ -101,12 +101,54 @@ function MyComponent() {
     return documentTable;
   }
 
+  function getTokenAddress() {
+    var tokenAddressField = document.getElementById("tokenAddress")
+
+    var address = tokenAddressField.value;
+    
+    try {
+      var checksumAddress = ethers.utils.getAddress(address)
+
+      return address;
+    } catch (e) {
+      return null;
+    }    
+  }
+
+  function getTokenID() {
+    var tokenAddressField = document.getElementById("tokenId")
+
+    var tokenId = tokenAddressField.value.trim()
+
+    tokenId = parseInt(tokenId)
+
+    if (isNaN(tokenId)) {
+      return null;
+    }
+
+    return tokenId;
+  }
+
   async function loadToken() {
+    var tokenAddress = getTokenAddress();
+    
+    if (tokenAddress == null) {
+      window.alert("Please provide a valid ERC721 contract address.")
+      return
+    }
+
+    var tokenId = getTokenID()
+    if (tokenId == null) {
+      window.alert("Please provide a valid ERC721 token ID.") 
+      return
+    }
+
     setLoadingState(LoadingState.LOADING_RECORDS)
     
     let provider = ethers.getDefaultProvider(chainId);
 
     var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
+
 
     // TODO get token id and address from input
     // var documentKey = await contract.getDocumentKey("0xd58E411CCe2019D021BC48e229115CC7A3CA2b44", 1)
@@ -116,8 +158,7 @@ function MyComponent() {
 
     var documents = []
 
-    // TODO cache ENS names to avoid repeats
-    // use 0x6fC21092DA55B392b045eD78F4732bff3C580e2c to test
+    // TODO cache ENS names to avoid repeats    
     for (var i = 0; i < numDocuments; i++) {      
       var record = await contract.documents(documentKey, i)
 
@@ -132,7 +173,8 @@ function MyComponent() {
     }
 
     setTokenDocuments(documents)
-    setLoadingState(2)
+
+    setLoadingState(LoadingState.LOADED)
   }
 
   // handle logic to recognize the connector currently being activated
@@ -213,7 +255,7 @@ function MyComponent() {
       <hr/>
         <div className="center-header-images-container">
           <div className="inner-header-images">
-            <img className="hero-image" src="scribe.jpg"/>
+            <img className="hero-image" src="scribe.jpg" alt="Scribe image"/>
             
             <img className="nft-overlay" src="nft_outline.png"/>
             
@@ -223,23 +265,23 @@ function MyComponent() {
           <div>
             <div className="input-section">
               <label><b>Token Address</b></label>
-                <input value="0x6fC21092DA55B392b045eD78F4732bff3C580e2c" id="tokenAddress" placeholder="0x..."/>
+                <input id="tokenAddress" placeholder="0x..."/>
               
               <label><b>Token ID</b></label>
-                <input id="tokenId" placeholder="0, 1, 2, 3..."/>
+                <input id="tokenId" type="number" placeholder="0, 1, 2, 3..." min="1" defaultValue="0"/>
             
               <div className="loading-spinner-container">
                 {
-                  (loadingState == LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
+                  (loadingState === LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
                 }
-              {!!(library && account) && (loadingState != LoadingState.LOADING_RECORDS) && (
+              {!!(library && account) && (loadingState !== LoadingState.LOADING_RECORDS) && (
                 <button onClick={() => {
                     loadToken();
                   }}
                 >Load ERC721</button>
               )}
               {
-                (!!(library) == false) && (
+                (!!(library) === false) && (
                 <p>TODO - button to connect to Web3</p>
                 )
               }
@@ -249,7 +291,7 @@ function MyComponent() {
                       
             <div className="document-table">
               {
-                (loadingState == LoadingState.LOADED) && createDocumentTable()
+                (loadingState === LoadingState.LOADED) && createDocumentTable()
               }
             </div>        
           </div>
