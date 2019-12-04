@@ -14,29 +14,67 @@ code {
     monospace;
 }
 
-.inputFields {
-  width:50%;
-  display:inline-block;
+input {
+  font-size: 14px;
+
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
+   width: 290px;
+   height: 25px;
 }
 
-.heroImage {
- width: 50%; 
- display:inline-block;
+button {
+  font-size: 14px;
+
+  width: 200px;
+  height: 30px;
+
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 
-.heroImage img {
+p {
+  color: #909090;
+}
+
+p.header {
+  color: #FFFFFF;
+}
+
+.input-section {
+
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.header-images {  
+  position: relative;
+  /*display: inline;*/
+  margin: 0 auto;
+   width: 50%; 
+}
+
+.hero-image {
   width: 100%;
-  height: auto;
+  /*height: 25%;*/
+  
+}
+
+.nft-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width:40%;
 }
 
 .loading-spinner {
   width: 25px;
 }
 
-p {
-	color: #909090;
-}
-
-p.header {
-	color: #FFFFFF;
+.center-div {
+     /*padding: 30px;*/
 }

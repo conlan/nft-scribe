@@ -205,15 +205,21 @@ function MyComponent() {
       };
     }
   }, [library, account, chainId]);
-
+//<img className="nft-overlay" src="sampleNFT.png"/>
   return (
     <div>
       <p><i>The Scribe</i> is a ...</p>
       <hr/>
-        <div className="heroImage">
-          <img src="scribe.jpg"/>
-        </div>
-        <div className="inputFields">
+        <div className="center-div">
+          <div className="header-images">
+            <img className="hero-image" src="scribe.jpg"/>
+            
+            <img className="nft-overlay" src="nft_outline.png"/>
+            
+          </div>
+          </div>
+        <br/>
+        <div className="input-section">
           <p className="header"><b>ERC721 Token address:</b></p>
             <input id="tokenAddress" placeholder="0x..."/>
           
