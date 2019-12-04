@@ -98,9 +98,11 @@ function MyComponent() {
       // TODO automatically insert hyperlinks 
       var dictation = record.text;
 
+      var recordLink = "https://etherscan.io/address/" + record.dictator;
+
       if (record.ensName === null) {
         documentTable.push(<div key={dictation + record.creationTime.toString()}>
-          <label>{record.dictator}: "{dictation}" {humanReadableTime} </label>
+          <label><a href={recordLink}>{record.dictator}</a>: "{dictation}" {humanReadableTime} </label>
         </div>)
       } else {
         documentTable.push(<div key={record.creationTime.toString()}>
@@ -167,6 +169,16 @@ function MyComponent() {
     } catch (e) {
       return null;
     }    
+  }
+
+  function getNetworkName(chainId) {
+    if (chainId === 1) {
+      return "Mainnet"
+    } else if (chainId == 5) {
+      return "Goerli"
+    } else {
+      return "..."
+    }
   }
 
   function getTokenID() {
@@ -418,9 +430,9 @@ function MyComponent() {
           </div>
 
       <hr/>        
-        <label>Github | Mainnet |  Ropsten | Goerli | @conlan | ThanksForTheCoffee.eth </label>
+        <label>Github | Contract | @conlan | ThanksForTheCoffee.eth | </label>
         <span>⛓</span>
-<label>{chainId === undefined ? "..." : chainId}        </label>
+        <label>{getNetworkName(chainId)}</label>
     </div>
   );
 }
