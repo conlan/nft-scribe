@@ -27,6 +27,8 @@ const SCRIBE_CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"dictat
 const SCRIBE_CONTRACT_ADDRESS = "0x284Dc68Afe4b30793acb7507a0Ae029d91bf698e" // Goerli
 // const SCRIBE_CONTRACT_ADDRESS = "..." // Mainnet
 
+var currentTokenAddress = "";
+var currentTokenId = 0;
 
 
 const LoadingState = {
@@ -70,7 +72,7 @@ function App() {
   );
 }
 
-function MyComponent() {
+function MyComponent() {  
   const context = useWeb3React();
   const {
     connector,
@@ -94,10 +96,59 @@ function MyComponent() {
       var humanReadableTime = convertTimestampToHumanReadable(record.creationTime)
 
       // TODO automatically insert hyperlinks 
-      documentTable.push(<label key={humanReadableTime}>{record.dictator} - {record.text} - {humanReadableTime} </label>)
+      var dictation = record.text;
+
+      if (record.ensName === null) {
+        documentTable.push(<div key={record.creationTime.toString()}>
+          <label>{record.dictator}: "{dictation}" ({humanReadableTime}) </label>
+        </div>)
+      } else {
+        documentTable.push(<div key={record.creationTime.toString()}>
+          <label>{record.ensName}: "{dictation}" ({humanReadableTime}) </label>
+        </div>)
+      }
+      
+      
     })
 
+    if (documentTable.length === 0) {
+      documentTable.push(<label>No records found for this token.</label>)
+    }
+
     return documentTable;
+  }
+
+  function convertTimestampToHumanReadable(timestamp) {
+    var nowSeconds = new Date().getTime() / 1000;
+    
+    var elapsedSeconds = nowSeconds - timestamp;
+
+    var minutes = Math.floor(elapsedSeconds / 60)
+    var hours = Math.floor(minutes / 60)
+    var days = Math.floor(hours / 24)
+
+    if (days > 0) {
+      return days + " days ago";
+    } else if (hours > 0) {
+      return hours + " hours ago";
+    } else if (minutes > 0) {
+      return minutes + " min ago";
+    } else if (elapsedSeconds > 0) {
+      return elapsedSeconds + " seconds ago";
+    }
+    
+    return timestamp.toString()
+  }
+
+  function getDictation() {
+    var dictationField = document.getElementById("dictation")
+
+    var dictation = dictationField.value.trim();
+
+    if (dictation.length === 0) {
+      return null;
+    }
+    return dictation;
   }
 
   // 'https://api.opensea.io/api/v1/assets?token_ids=5477&asset_contract_address=0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0'
@@ -115,10 +166,6 @@ function MyComponent() {
     }    
   }
 
-  function convertTimestampToHumanReadable(timestamp) {
-    return "2hr ago"
-  }
-
   function getTokenID() {
     var tokenAddressField = document.getElementById("tokenId")
 
@@ -131,6 +178,42 @@ function MyComponent() {
     }
 
     return tokenId;
+  }
+
+  async function submitDictation() {
+    var dictation = getDictation();
+
+    if (dictation === null) {
+      window.alert("Please provide a dictation.")
+      return
+    }
+
+    setLoadingState(LoadingState.SUBMITTING_DICTATION)
+
+    var provider = ethers.getDefaultProvider(chainId);
+
+    var iface = new ethers.utils.Interface(SCRIBE_CONTRACT_ABI)
+
+    // generate the call data for the dictation
+    var calldata = iface.functions.dictate.encode(
+      [currentTokenAddress, currentTokenId, dictation]
+    )
+
+    const tx = {
+      to: SCRIBE_CONTRACT_ADDRESS,
+      data: calldata
+      // gasPrice: ethers.utils.bigNumberify(gasPrice * 1000000000)
+    }
+
+    var signer = library.getSigner(account);
+
+    signer.sendTransaction(tx)
+
+    // send the transaction
+    // signer.sendTransaction(tx)
+    
+
+    // await contract.dictate(currentTokenAddress, currentTokenId, "Test")
   }
 
   async function loadToken() {
@@ -147,10 +230,12 @@ function MyComponent() {
       return
     }
 
-    setLoadingState(LoadingState.LOADING_RECORDS)
+    setNFTSamplePreviewURL("")
     
-    let provider = ethers.getDefaultProvider(chainId);
+    setLoadingState(LoadingState.LOADING_RECORDS)
 
+    var provider = ethers.getDefaultProvider(chainId)
+    
     var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
 
     var documentKey = await contract.getDocumentKey(tokenAddress, tokenId)
@@ -163,15 +248,19 @@ function MyComponent() {
     for (var i = 0; i < numDocuments; i++) {      
       var record = await contract.documents(documentKey, i)
 
-      console.log(record.dictator)
-
       var checksumAddress = ethers.utils.getAddress("0x6fC21092DA55B392b045eD78F4732bff3C580e2c")
       
       // look up if there's an ENS name for this address
       record.ensName = await provider.lookupAddress(checksumAddress)
+      console.log(record.ensName)
 
       documents.splice(0, 0, record)      
     }
+
+    currentTokenAddress = tokenAddress;
+    currentTokenId = tokenId;
+
+    setNFTSamplePreviewURL("https://storage.opensea.io/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0-preview/5477-1574363597.png")
 
     setTokenDocuments(documents)
 
@@ -258,7 +347,7 @@ function MyComponent() {
       <hr/>
         <div className="center-header-images-container">
           <div className="inner-header-images">
-            <img className="hero-image" src="scribe.jpg" alt="Scribe image"/>
+            <img className="hero-image" src="scribe.gif" alt="Scribe image"/>
             
             {(NFTSamplePreviewURL.length === 0) && (<img className="nft-overlay" src="nft_outline.png"/>)}
 
@@ -273,16 +362,16 @@ function MyComponent() {
           </div>
         <br/>
           <div>
-            <div className="input-section">
-              <label><b>Token Address</b></label>
-                <input id="tokenAddress" placeholder="0x..."/>
+            <div className="main-section">
+                <label><b>Token Address</b></label>
+                  <input id="tokenAddress" placeholder="0x..." defaultValue="0x6Da7DD22A9c1B6bC7b2Ba9A540A37EC786E30eA7"/>
               
-              <label><b>Token ID</b></label>
-                <input id="tokenId" type="number" placeholder="0, 1, 2, 3..." min="1" defaultValue="0"/>
+                <label><b>Token ID</b></label>
+                  <input id="tokenId" type="number" placeholder="0, 1, 2, 3..." min="1" defaultValue="0"/>
             
-              <div className="load-token-container">
+              <div className="button-container">
                 {!!(library && account) && (loadingState !== LoadingState.LOADING_RECORDS) && (
-                  <button onClick={() => {
+                  <button className="load-erc" onClick={() => {
                       loadToken();
                     }}
                   ><b>Load ERC721</b></button>
@@ -292,13 +381,26 @@ function MyComponent() {
                   <p>TODO - button to connect to Web3</p>
                   )
                 }
-              </div>
-            </div>
+              </div>       
 
-                      
-            <div className="document-table">
               {
-                (loadingState === LoadingState.LOADED) && createDocumentTable()
+                (loadingState !== LoadingState.UNLOADED) && (loadingState !== LoadingState.LOADING_RECORDS) && 
+                  (loadingState !== LoadingState.SUBMITTING_DICTATION) && (<div>
+                    <label><b>Dictation</b></label>                   
+                    <input id="dictation" placeholder="Let it be known..."/>
+                    <div className="button-container">
+                    
+                      <button className="submit-dictation" onClick={() => {
+                        submitDictation()
+                      }}><b>Submit Dictation</b></button>
+
+                    </div>
+                  </div>
+                )
+              }
+
+              {
+                ((loadingState === LoadingState.LOADED) || (loadingState === LoadingState.SUBMITTING_DICTATION)) && createDocumentTable()
               }
             </div>        
           </div>
