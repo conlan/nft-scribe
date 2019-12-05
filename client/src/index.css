@@ -35,6 +35,10 @@ button.submit-dictation {
   background-color: #4c76af;
 }
 
+button.connect-web3 {
+  background-color: #af564c;
+}
+
 button:hover {
   opacity: 0.8;
 }

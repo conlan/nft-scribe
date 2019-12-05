@@ -13,10 +13,10 @@ import { Web3Provider } from "@ethersproject/providers";
 // import { formatEther } from "@ethersproject/units";
 import './index.css';
 
-// import {
-  // injected,
+import {
+  injected,
   // network
-// } from "./connectors";
+} from "./connectors";
 
 import { useEagerConnect, useInactiveListener } from "./hooks";
 
@@ -38,11 +38,6 @@ const LoadingState = {
     LOADED: 2,
     SUBMITTING_DICTATION: 3
 }
-
-// const connectorsByName = {
-//   Injected: injected,
-//   Network: network
-// };
 
 // function getErrorMessage(error) {
 //   if (error instanceof NoEthereumProviderError) {
@@ -80,7 +75,7 @@ function MyComponent() {
     library,
     chainId,
     account,
-    // activate,
+    activate,
     // deactivate,
     // active,
     // error
@@ -411,7 +406,11 @@ function MyComponent() {
                 )}
                 {
                   (!!(library) === false) && (
-                  <p>TODO - button to connect to Web3</p>
+                    <button className="connect-web3"  onClick={() => {
+                      setActivatingConnector(injected);
+                      activate(injected);
+                    }}
+                  >Connect to Web3</button>                  
                   )
                 }
               </div>       
