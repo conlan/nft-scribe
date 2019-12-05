@@ -90,8 +90,9 @@ function MyComponent() {
   
   const [loadingState, setLoadingState] = React.useState(LoadingState.UNLOADED)
 
-  function createDocumentTable() {
-    var documentTable = []
+  // create a list of record divs
+  function createRecordList() {
+    var recordList = []
 
     tokenDocuments.forEach(function(record) {
       var humanReadableTime = convertTimestampToHumanReadable(record.creationTime)
@@ -111,11 +112,11 @@ function MyComponent() {
       if (record.ensName === null) {
         var shortName =  getShortName(record.dictator)
 
-        documentTable.push(<div className="record-line" key={dictation + record.creationTime.toString()}>
+        recordList.push(<div className="record-line" key={dictation + record.creationTime.toString()}>
           <label className="record-line"><b><a href={recordLink} rel="noopener noreferrer" target="_blank">{shortName}</a></b><span className="timestamp"> • ({humanReadableTime})</span><br/><br/>{dictation}</label>
         </div>)
       } else {
-        documentTable.push(<div className="record-line" key={record.creationTime.toString()}>
+        recordList.push(<div className="record-line" key={record.creationTime.toString()}>
           <label className="record-line"><b><a href={recordLink} rel="noopener noreferrer" target="_blank">{record.ensName}</a></b><span className="timestamp"> • ({humanReadableTime})</span><br/><br/>{dictation}</label>          
         </div>)
       }
@@ -123,13 +124,14 @@ function MyComponent() {
       
     })
 
-    if (documentTable.length === 0) {
-      documentTable.push(<label key="0">No records found for this token.</label>)
+    if (recordList.length === 0) {
+      recordList.push(<label key="0">No records found for this token.</label>)
     }
 
-    return documentTable;
+    return recordList;
   }
 
+  // convert a UTC timestamp to something human readable
   function convertTimestampToHumanReadable(timestamp) {
     var nowSeconds = new Date().getTime() / 1000;
     
@@ -153,7 +155,8 @@ function MyComponent() {
     }
   }
 
-  function getDictation() {
+  // get the currently inputted dictation text
+  function getDictationInput() {
     var dictationField = document.getElementById("dictation")
 
     var dictation = dictationField.value.trim();
@@ -164,21 +167,7 @@ function MyComponent() {
     return dictation;
   }
 
-  // 'https://api.opensea.io/api/v1/assets?token_ids=5477&asset_contract_address=0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0'
-  function getTokenAddress() {
-    var tokenAddressField = document.getElementById("tokenAddress")
-
-    var address = tokenAddressField.value;
-    
-    try {
-      var checksumAddress = ethers.utils.getAddress(address)
-
-      return checksumAddress;
-    } catch (e) {
-      return null;
-    }    
-  }
-
+  // get the name of the network for a chain id
   function getNetworkName(chainId) {
     if (chainId === 1) {
       return "Mainnet"
@@ -189,7 +178,8 @@ function MyComponent() {
     }
   }
 
-  function getTokenID() {
+  // Return the currently inputted token id
+  function getTokenIDInput() {
     var tokenAddressField = document.getElementById("tokenId")
 
     var tokenId = tokenAddressField.value.trim()
@@ -203,8 +193,51 @@ function MyComponent() {
     return tokenId;
   }
 
-  async function submitDictation() {
-    var dictation = getDictation();
+  // 'https://api.opensea.io/api/v1/assets?token_ids=5477&asset_contract_address=0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0'
+  // Return the currently inputted token address
+  function getTokenAddressInput() {
+    var tokenAddressField = document.getElementById("tokenAddress")
+
+    var address = tokenAddressField.value;
+    
+    try {
+      var checksumAddress = ethers.utils.getAddress(address)
+
+      return checksumAddress;
+    } catch (e) {
+      return null;
+    }    
+  }
+
+  // Retrieve the fast gas price from ETHGasStation
+  function getGasPrice(callback) {
+    fetch("https://ethgasstation.info/json/ethgasAPI.json").then(response => response.json()).then(response => {
+      var gasPrice = response.fast
+
+      // default gas price of 10 if we got an undefined response
+      if (gasPrice === undefined) {
+        gasPrice = 10
+      } else {
+        gasPrice = gasPrice / 10
+      }
+
+      callback(gasPrice)
+    })
+  }
+
+  function checkValidDictation() {
+    var dictation = getDictationInput();
+
+    if (dictation === null) {
+      window.alert("Please provide a dictation.")
+      return false;
+    }
+
+    return true
+  }
+
+  async function submitDictation(gasPrice) {
+    var dictation = getDictationInput();
 
     if (dictation === null) {
       window.alert("Please provide a dictation.")
@@ -212,8 +245,6 @@ function MyComponent() {
     }
 
     console.log("Submitting dictation...")
-
-    setLoadingState(LoadingState.SUBMITTING_DICTATION)
 
     // var provider = ethers.getDefaultProvider(chainId);
 
@@ -226,9 +257,8 @@ function MyComponent() {
 
     const tx = {
       to: SCRIBE_CONTRACT_ADDRESS,
-      data: calldata
-      // TODO set gas price from eth gas station
-      // gasPrice: ethers.utils.bigNumberify(gasPrice * 1000000000)
+      data: calldata,      
+      gasPrice: ethers.utils.bigNumberify(gasPrice * 1000000000)
     }
 
     var signer = library.getSigner(account);
@@ -253,14 +283,14 @@ function MyComponent() {
   }
 
   async function loadToken() {
-    var tokenAddress = getTokenAddress();
+    var tokenAddress = getTokenAddressInput();
     
     if (tokenAddress == null) {
       window.alert("Please provide a valid ERC721 contract address.")
       return
     }
 
-    var tokenId = getTokenID()
+    var tokenId = getTokenIDInput()
     if (tokenId == null) {
       window.alert("Please provide a valid ERC721 token ID.") 
       return
@@ -304,7 +334,7 @@ function MyComponent() {
 
     var ownerOfTokenAddress = await tokenContract.ownerOf(currentTokenId)
     
-    setIsTokenOwner(account == ownerOfTokenAddress)
+    setIsTokenOwner(account === ownerOfTokenAddress)
 
     setLoadingState(LoadingState.LOADED)
   }
@@ -390,6 +420,7 @@ function MyComponent() {
 
   return (
     <div>
+      <br/>
       <label><i>NFT Scribe</i> is a ...</label>
       <hr/>
         <div className="center-header-images-container">
@@ -444,7 +475,11 @@ function MyComponent() {
                     <div className="button-container">
                     
                       <button disabled={(loadingState === LoadingState.SUBMITTING_DICTATION)} className="submit-dictation" onClick={() => {
-                        submitDictation()
+                        if (checkValidDictation()) {
+                          setLoadingState(LoadingState.SUBMITTING_DICTATION)
+
+                          getGasPrice(submitDictation)
+                        }                        
                       }}><b>Submit Dictation</b></button>
 
                     </div>
@@ -453,15 +488,17 @@ function MyComponent() {
               }
 
               {
-                ((loadingState === LoadingState.LOADED) || (loadingState === LoadingState.SUBMITTING_DICTATION)) && createDocumentTable()
+                ((loadingState === LoadingState.LOADED) || (loadingState === LoadingState.SUBMITTING_DICTATION)) && createRecordList()
               }
             </div>        
           </div>
 
       <hr/>        
-        <label>Github | Contract | @conlan | ThanksForTheCoffee.eth | </label>
+        <label><b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@conlan</a></b> | </label>
         <span>⛓</span>
         <label>{getNetworkName(chainId)}</label>
+        <br/>
+        <br/>
     </div>
   );
 }
