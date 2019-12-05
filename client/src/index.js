@@ -141,7 +141,6 @@ function MyComponent() {
     var hours = Math.floor(minutes / 60)
     var days = Math.floor(hours / 24)
 
-    // TODO insert parentheses
     if (days > 0) {
       if (days === 1) {
         return days + " day ago";
@@ -317,7 +316,7 @@ function MyComponent() {
     setNFTSamplePreviewURL("")
     setNFTSampleTitle("")
 
-    // TODO generate a proper opensea URL
+    // TODO insert developer API Key
     var openseaURL = "https://api.opensea.io/api/v1/assets?token_ids=" + getTokenIDInput() + "&asset_contract_address=" + getTokenAddressInput()
 
     console.log(openseaURL)
@@ -328,6 +327,7 @@ function MyComponent() {
       headers: {'Content-Type':'application/json'},      
     }).then(response => response.json()).then(response => {
       if (response.assets.length > 0) {
+        console.log(response.assets[0].image_preview_url)
         setNFTSamplePreviewURL(response.assets[0].image_preview_url)
         setNFTSampleTitle(response.assets[0].name)
       } else {
@@ -335,13 +335,24 @@ function MyComponent() {
         setNFTSampleTitle("n/a")
       }
 
-      callback()
-    }).catch(error => {
-      
-      setLoadingState(LoadingState.UNLOADED)
+      callback().catch(error => {
+          window.alert(error)
 
+          resetToUnloadedState();
+      });
+    }).catch(error => {      
       window.alert(error)
+
+      resetToUnloadedState();
     })
+  }
+
+  function resetToUnloadedState() {
+    // reset preview and title
+    setNFTSamplePreviewURL("")
+    setNFTSampleTitle("")
+
+    setLoadingState(LoadingState.UNLOADED)
   }
 
   async function loadToken() {
@@ -352,7 +363,7 @@ function MyComponent() {
     
     var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
 
-    var documentKey = await contract.getDocumentKey(tokenAddress, tokenId);
+    var documentKey = await contract.getDocumentKey(tokenAddress, tokenId)
 
     var numDocuments = (await contract.documentsCount(documentKey)).toString()
 
@@ -361,10 +372,10 @@ function MyComponent() {
     // TODO cache ENS names to avoid repeats    
     for (var i = 0; i < numDocuments; i++) {      
       var record = await contract.documents(documentKey, i)
-
       
       // look up if there's an ENS name for this address
       var checksumAddress = ethers.utils.getAddress(record.dictator)
+
       record.ensName = await provider.lookupAddress(checksumAddress)
 
       documents.splice(0, 0, record)      
