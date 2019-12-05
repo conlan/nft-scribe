@@ -3,20 +3,21 @@ import * as ReactDOM from "react-dom";
 import {
   Web3ReactProvider,
   useWeb3React,
-  UnsupportedChainIdError
+  // UnsupportedChainIdError
 } from "@web3-react/core";
-import {
-  NoEthereumProviderError,
-  UserRejectedRequestError as UserRejectedRequestErrorInjected
-} from "@web3-react/injected-connector";
+// import {
+  // NoEthereumProviderError,
+//   UserRejectedRequestError as UserRejectedRequestErrorInjected
+// } from "@web3-react/injected-connector";
 import { Web3Provider } from "@ethersproject/providers";
-import { formatEther } from "@ethersproject/units";
+// import { formatEther } from "@ethersproject/units";
 import './index.css';
 
-import {
-  injected,
-  network
-} from "./connectors";
+// import {
+  // injected,
+  // network
+// } from "./connectors";
+
 import { useEagerConnect, useInactiveListener } from "./hooks";
 
 const ethers = require('ethers');
@@ -38,10 +39,10 @@ const LoadingState = {
     SUBMITTING_DICTATION: 3
 }
 
-const connectorsByName = {
-  Injected: injected,
-  Network: network
-};
+// const connectorsByName = {
+//   Injected: injected,
+//   Network: network
+// };
 
 // function getErrorMessage(error) {
 //   if (error instanceof NoEthereumProviderError) {
@@ -79,10 +80,10 @@ function MyComponent() {
     library,
     chainId,
     account,
-    activate,
-    deactivate,
-    active,
-    error
+    // activate,
+    // deactivate,
+    // active,
+    // error
   } = context;
 
   const [tokenDocuments, setTokenDocuments] = React.useState([]);
@@ -99,20 +100,21 @@ function MyComponent() {
       var dictation = record.text;
 
       var networkName = getNetworkName(chainId)
+      var recordLink = null;
 
       if (networkName === "Mainnet") {
-        var recordLink = "https://etherscan.io/address/" + record.dictator;
+        recordLink = "https://etherscan.io/address/" + record.dictator;
       } else {
-        var recordLink = "https://" + networkName + ".etherscan.io/address/" + record.dictator;        
+        recordLink = "https://" + networkName + ".etherscan.io/address/" + record.dictator;        
       }
 
       if (record.ensName === null) {
         documentTable.push(<div key={dictation + record.creationTime.toString()}>
-          <label><a href={recordLink} target="_blank">{record.dictator}</a>: "{dictation}" {humanReadableTime} </label>
+          <label className="record-line"><a href={recordLink} rel="noopener noreferrer" target="_blank">{record.dictator}</a> "{dictation}" {humanReadableTime} </label>
         </div>)
       } else {
         documentTable.push(<div key={record.creationTime.toString()}>
-          <label>{record.ensName}: "{dictation}" {humanReadableTime} </label>
+          <label className="record-line">{record.ensName} "{dictation}" {humanReadableTime} </label>
         </div>)
       }
       
@@ -171,7 +173,7 @@ function MyComponent() {
     try {
       var checksumAddress = ethers.utils.getAddress(address)
 
-      return address;
+      return checksumAddress;
     } catch (e) {
       return null;
     }    
@@ -180,7 +182,7 @@ function MyComponent() {
   function getNetworkName(chainId) {
     if (chainId === 1) {
       return "Mainnet"
-    } else if (chainId == 5) {
+    } else if (chainId === 5) {
       return "Goerli"
     } else {
       return "..."
@@ -211,7 +213,7 @@ function MyComponent() {
 
     setLoadingState(LoadingState.SUBMITTING_DICTATION)
 
-    var provider = ethers.getDefaultProvider(chainId);
+    // var provider = ethers.getDefaultProvider(chainId);
 
     var iface = new ethers.utils.Interface(SCRIBE_CONTRACT_ABI)
 
@@ -314,62 +316,63 @@ function MyComponent() {
   useInactiveListener(!triedEager || !!activatingConnector);
 
   // set up block listener
-  const [blockNumber, setBlockNumber] = React.useState();
-  React.useEffect(() => {
-    if (library) {
-      let stale = false;
+  // const [blockNumber, setBlockNumber] = React.useState();
 
-      library
-        .getBlockNumber()
-        .then(blockNumber => {
-          if (!stale) {
-            setBlockNumber(blockNumber);
-          }
-        })
-        .catch(() => {
-          if (!stale) {
-            setBlockNumber(null);
-          }
-        });
+  // React.useEffect(() => {
+  //   if (library) {
+  //     let stale = false;
 
-      const updateBlockNumber = blockNumber => {
-        setBlockNumber(blockNumber);
-      };
-      library.on("block", updateBlockNumber);
+  //     library
+  //       .getBlockNumber()
+  //       .then(blockNumber => {
+  //         if (!stale) {
+  //           setBlockNumber(blockNumber);
+  //         }
+  //       })
+  //       .catch(() => {
+  //         if (!stale) {
+  //           setBlockNumber(null);
+  //         }
+  //       });
 
-      return () => {
-        library.removeListener("block", updateBlockNumber);
-        stale = true;
-        setBlockNumber(undefined);
-      };
-    }
-  }, [library, chainId]);
+  //     // const updateBlockNumber = blockNumber => {
+  //     //   setBlockNumber(blockNumber);
+  //     // };
+  //     // library.on("block", updateBlockNumber);
+
+  //     return () => {
+  //       library.removeListener("block", updateBlockNumber);
+  //       stale = true;
+  //       setBlockNumber(undefined);
+  //     };
+  //   }
+  // }, [library, chainId]);
 
   // fetch eth balance of the connected account
-  const [ethBalance, setEthBalance] = React.useState();
-  React.useEffect(() => {
-    if (library && account) {
-      let stale = false;
+  // const [ethBalance, setEthBalance] = React.useState();
+  // React.useEffect(() => {
+  //   if (library && account) {
+  //     let stale = false;
 
-      library
-        .getBalance(account)
-        .then(balance => {
-          if (!stale) {
-            setEthBalance(balance);
-          }
-        })
-        .catch(() => {
-          if (!stale) {
-            setEthBalance(null);
-          }
-        });
+  //     library
+  //       .getBalance(account)
+  //       .then(balance => {
+  //         if (!stale) {
+  //           setEthBalance(balance);
+  //         }
+  //       })
+  //       .catch(() => {
+  //         if (!stale) {
+  //           setEthBalance(null);
+  //         }
+  //       });
 
-      return () => {
-        stale = true;
-        setEthBalance(undefined);
-      };
-    }
-  }, [library, account, chainId]);
+  //     return () => {
+  //       stale = true;
+  //       setEthBalance(undefined);
+  //     };
+  //   }
+  // }, [library, account, chainId]);
 
   return (
     <div>
@@ -377,15 +380,15 @@ function MyComponent() {
       <hr/>
         <div className="center-header-images-container">
           <div className="inner-header-images">
-            <img className="hero-image" src="scribe.gif" alt="Scribe image"/>
+            <img className="hero-image" src="scribe.gif" alt="Scribe"/>
             
-            {(NFTSamplePreviewURL.length === 0) && (<img className="nft-overlay" src="nft_outline.png"/>)}
+            {(NFTSamplePreviewURL.length === 0) && (<img className="nft-overlay" alt="Outline" src="nft_outline.png"/>)}
 
             {
-              (loadingState === LoadingState.LOADING_RECORDS) && (<img className="loading-spinner" src="loading.gif"/>)
+              (loadingState === LoadingState.LOADING_RECORDS) && (<img alt="Spinner" className="loading-spinner" src="loading.gif"/>)
             }
 
-            {(NFTSamplePreviewURL.length !== 0) && (<img className="nft-overlay" src={NFTSamplePreviewURL}/>)}
+            {(NFTSamplePreviewURL.length !== 0) && (<img alt="Token" className="nft-overlay" src={NFTSamplePreviewURL}/>)}
             
 
           </div>

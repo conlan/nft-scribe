@@ -43,6 +43,10 @@ label {
   color: #909090;
 }
 
+label.record-line {
+  color: #FFFFFF;
+}
+
 .main-section {
   position: relative;
   margin: 0 auto;
