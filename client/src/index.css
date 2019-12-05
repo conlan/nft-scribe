@@ -98,11 +98,29 @@ span.timestamp {
   width: 100%;  
 }
 
-.nft-overlay {
+img.nft-outline {
   position: absolute;
   bottom: 0;
   right: 0;
   width:50%;
+}
+
+img.nft-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width:50%;
+  height:50%;
+  object-fit: contain;
+}
+
+label.nft-overlay {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #000000;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width:50%; 
 }
 
 .loading-spinner {

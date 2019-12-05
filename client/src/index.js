@@ -192,8 +192,7 @@ function MyComponent() {
 
     return tokenId;
   }
-
-  // 'https://api.opensea.io/api/v1/assets?token_ids=5477&asset_contract_address=0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0'
+  
   // Return the currently inputted token address
   function getTokenAddressInput() {
     var tokenAddressField = document.getElementById("tokenAddress")
@@ -279,26 +278,60 @@ function MyComponent() {
 
     await provider.waitForTransaction(tx.hash)
 
+    setLoadingState(LoadingState.LOADING_RECORDS)
+
     loadToken()
   }
 
-  async function loadToken() {
+  function checkValidToken() {
     var tokenAddress = getTokenAddressInput();
     
     if (tokenAddress == null) {
       window.alert("Please provide a valid ERC721 contract address.")
-      return
+      return false
     }
 
     var tokenId = getTokenIDInput()
     if (tokenId == null) {
       window.alert("Please provide a valid ERC721 token ID.") 
-      return
+      return false
     }
 
+    return true;
+  }
+
+  function loadTokenPreview(callback) {  
+    // reset preview and title
     setNFTSamplePreviewURL("")
-    
-    setLoadingState(LoadingState.LOADING_RECORDS)
+    setNFTSampleTitle("")
+
+    // TODO generate a proper opensea URL
+    var openseaURL = "https://api.opensea.io/api/v1/assets?token_ids=" + getTokenIDInput() + "&asset_contract_address=" + getTokenAddressInput()
+
+    console.log(openseaURL)
+                        
+    fetch(openseaURL, {
+      crossDomain:true,
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},      
+    }).then(response => response.json()).then(response => {
+      console.log(response.assets[0])
+
+      setNFTSamplePreviewURL(response.assets[0].image_preview_url)
+      setNFTSampleTitle(response.assets[0].name)
+
+      callback()
+    }).catch(error => {
+      
+      setLoadingState(LoadingState.UNLOADED)
+
+      window.alert(error)
+    })
+  }
+
+  async function loadToken() {
+    var tokenAddress = getTokenAddressInput();
+    var tokenId = getTokenIDInput()    
 
     var provider = ethers.getDefaultProvider(chainId)
     
@@ -323,9 +356,7 @@ function MyComponent() {
     }
 
     currentTokenAddress = tokenAddress;
-    currentTokenId = tokenId;
-
-    setNFTSamplePreviewURL("https://storage.opensea.io/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0-preview/5477-1574363597.png")
+    currentTokenId = tokenId;    
 
     setTokenDocuments(documents)
 
@@ -342,6 +373,7 @@ function MyComponent() {
   const [isTokenOwner, setIsTokenOwner] = React.useState(false);
 
   const [NFTSamplePreviewURL, setNFTSamplePreviewURL] = React.useState("");
+  const [NFTSampleTitle, setNFTSampleTitle] = React.useState("");
 
   // handle logic to recognize the connector currently being activated
   const [activatingConnector, setActivatingConnector] = React.useState();
@@ -357,67 +389,6 @@ function MyComponent() {
   // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
   useInactiveListener(!triedEager || !!activatingConnector);
 
-  // set up block listener
-  // const [blockNumber, setBlockNumber] = React.useState();
-
-  // React.useEffect(() => {
-  //   if (library) {
-  //     let stale = false;
-
-  //     library
-  //       .getBlockNumber()
-  //       .then(blockNumber => {
-  //         if (!stale) {
-  //           setBlockNumber(blockNumber);
-  //         }
-  //       })
-  //       .catch(() => {
-  //         if (!stale) {
-  //           setBlockNumber(null);
-  //         }
-  //       });
-
-  //     // const updateBlockNumber = blockNumber => {
-  //     //   setBlockNumber(blockNumber);
-  //     // };
-  //     // library.on("block", updateBlockNumber);
-
-  //     return () => {
-  //       library.removeListener("block", updateBlockNumber);
-  //       stale = true;
-  //       setBlockNumber(undefined);
-  //     };
-  //   }
-  // }, [library, chainId]);
-
-  // fetch eth balance of the connected account
-  // const [ethBalance, setEthBalance] = React.useState();
-  // React.useEffect(() => {
-  //   if (library && account) {
-  //     let stale = false;
-
-  //     library
-  //       .getBalance(account)
-  //       .then(balance => {
-  //         if (!stale) {
-  //           setEthBalance(balance);
-  //         }
-  //       })
-  //       .catch(() => {
-  //         if (!stale) {
-  //           setEthBalance(null);
-  //         }
-  //       });
-
-  //     return () => {
-  //       stale = true;
-  //       setEthBalance(undefined);
-  //     };
-  //   }
-  // }, [library, account, chainId]);
-
-
-
   return (
     <div>
       <br/>
@@ -427,9 +398,11 @@ function MyComponent() {
           <div className="inner-header-images">
             <img className="hero-image" src="scribe.gif" alt="Scribe"/>
             
-            {(NFTSamplePreviewURL.length === 0) && (<img className="nft-overlay" alt="Outline" src="nft_outline.png"/>)}
+            {(NFTSamplePreviewURL.length === 0) && (<img className="nft-outline" alt="Outline" src="nft_outline.png"/>)}
 
             {(NFTSamplePreviewURL.length !== 0) && (<img alt="Token" className="nft-overlay" src={NFTSamplePreviewURL}/>)}
+
+            {(NFTSampleTitle.length !== 0) && (<label className="nft-overlay" >{NFTSampleTitle}</label>)}
 
             {
               ((loadingState === LoadingState.LOADING_RECORDS) || (loadingState === LoadingState.SUBMITTING_DICTATION))
@@ -451,7 +424,11 @@ function MyComponent() {
               <div className="button-container">
                 {!!(library && account) && (
                   <button disabled={(loadingState === LoadingState.LOADING_RECORDS)}  className="load-erc" onClick={() => {
-                      loadToken();
+                      if (checkValidToken()) {
+                        setLoadingState(LoadingState.LOADING_RECORDS)
+
+                        loadTokenPreview(loadToken)                        
+                      }
                     }}
                   ><b>Load ERC721</b></button>
                 )}
