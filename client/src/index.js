@@ -148,10 +148,8 @@ function MyComponent() {
     } else if (elapsedSeconds > 0) {
       return elapsedSeconds + " seconds ago";
     } else {
-      console.log(elapsedSeconds)
+      return "just recently"
     }
-    
-    return ""
   }
 
   function getDictation() {
@@ -212,6 +210,8 @@ function MyComponent() {
       return
     }
 
+    console.log("Submitting dictation...")
+
     setLoadingState(LoadingState.SUBMITTING_DICTATION)
 
     // var provider = ethers.getDefaultProvider(chainId);
@@ -226,6 +226,7 @@ function MyComponent() {
     const tx = {
       to: SCRIBE_CONTRACT_ADDRESS,
       data: calldata
+      // TODO set gas price from eth gas station
       // gasPrice: ethers.utils.bigNumberify(gasPrice * 1000000000)
     }
 
@@ -375,6 +376,8 @@ function MyComponent() {
   //   }
   // }, [library, account, chainId]);
 
+
+
   return (
     <div>
       <label><i>NFT Scribe</i> is a ...</label>
@@ -385,11 +388,12 @@ function MyComponent() {
             
             {(NFTSamplePreviewURL.length === 0) && (<img className="nft-overlay" alt="Outline" src="nft_outline.png"/>)}
 
-            {
-              (loadingState === LoadingState.LOADING_RECORDS) && (<img alt="Spinner" className="loading-spinner" src="loading.gif"/>)
-            }
-
             {(NFTSamplePreviewURL.length !== 0) && (<img alt="Token" className="nft-overlay" src={NFTSamplePreviewURL}/>)}
+
+            {
+              ((loadingState === LoadingState.LOADING_RECORDS) || (loadingState === LoadingState.SUBMITTING_DICTATION))
+              && (<img alt="Spinner" className="loading-spinner" src="loading.gif"/>)
+            }
             
 
           </div>
@@ -404,8 +408,8 @@ function MyComponent() {
                   <input id="tokenId" type="number" placeholder="0, 1, 2, 3..." min="1" defaultValue="0"/>
             
               <div className="button-container">
-                {!!(library && account) && (loadingState !== LoadingState.LOADING_RECORDS) && (
-                  <button className="load-erc" onClick={() => {
+                {!!(library && account) && (
+                  <button disabled={(loadingState === LoadingState.LOADING_RECORDS)}  className="load-erc" onClick={() => {
                       loadToken();
                     }}
                   ><b>Load ERC721</b></button>
@@ -421,14 +425,15 @@ function MyComponent() {
                 }
               </div>       
 
+
               {
                 (loadingState !== LoadingState.UNLOADED) && (loadingState !== LoadingState.LOADING_RECORDS) && 
-                  (loadingState !== LoadingState.SUBMITTING_DICTATION) && (<div>
+                  (<div>
                     <label><b>Dictation</b></label>                   
-                    <input id="dictation" placeholder="Let it be known..."/>
+                    <input disabled={(loadingState === LoadingState.SUBMITTING_DICTATION)} id="dictation" placeholder="Let it be known..."/>
                     <div className="button-container">
                     
-                      <button className="submit-dictation" onClick={() => {
+                      <button disabled={(loadingState === LoadingState.SUBMITTING_DICTATION)} className="submit-dictation" onClick={() => {
                         submitDictation()
                       }}><b>Submit Dictation</b></button>
 

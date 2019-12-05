@@ -18,6 +18,10 @@ input {
   box-sizing: border-box;
 }
 
+input:disabled {
+  opacity: 0.4;
+}
+
 button {  
   border: none;
   cursor: pointer;
@@ -41,6 +45,11 @@ button.connect-web3 {
 
 button:hover {
   opacity: 0.8;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: auto;
 }
 
 label {
