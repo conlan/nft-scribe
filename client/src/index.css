@@ -18,6 +18,11 @@ input {
   box-sizing: border-box;
 }
 
+.padded-div {
+  padding: 10px;
+  text-align: center;
+}
+
 input:disabled {
   opacity: 0.4;
 }
@@ -52,16 +57,17 @@ button:disabled {
   cursor: auto;
 }
 
-label {
-  color: #909090;
-}
-
 div.record-line {
   margin-bottom: 20px;
   border-style: dotted;
   border-width: 1px;
   border-color: #8899a6;
   padding:10px;
+}
+
+label {
+  color: #909090;
+  vertical-align: middle;
 }
 
 label.record-line {

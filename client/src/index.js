@@ -143,13 +143,25 @@ function MyComponent() {
 
     // TODO insert parentheses
     if (days > 0) {
-      return days + " days ago";
+      if (days === 1) {
+        return days + " day ago";
+      } else {
+        return days + " days ago";
+      }
     } else if (hours > 0) {
-      return hours + " hours ago";
+      if (hours === 1) {
+        return hours + " hour ago";
+      } else {
+        return hours + " hours ago";
+      }
     } else if (minutes > 0) {
       return minutes + " min ago";
     } else if (elapsedSeconds > 0) {
-      return elapsedSeconds + " seconds ago";
+      if (elapsedSeconds === 1) {
+        return elapsedSeconds + " second ago";
+      } else {
+        return elapsedSeconds + " seconds ago";
+      }
     } else {
       return "just recently"
     }
@@ -315,10 +327,13 @@ function MyComponent() {
       method: 'POST',
       headers: {'Content-Type':'application/json'},      
     }).then(response => response.json()).then(response => {
-      console.log(response.assets[0])
-
-      setNFTSamplePreviewURL(response.assets[0].image_preview_url)
-      setNFTSampleTitle(response.assets[0].name)
+      if (response.assets.length > 0) {
+        setNFTSamplePreviewURL(response.assets[0].image_preview_url)
+        setNFTSampleTitle(response.assets[0].name)
+      } else {
+        setNFTSamplePreviewURL("image-not-found.png")
+        setNFTSampleTitle("n/a")
+      }
 
       callback()
     }).catch(error => {
@@ -337,7 +352,7 @@ function MyComponent() {
     
     var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
 
-    var documentKey = await contract.getDocumentKey(tokenAddress, tokenId)
+    var documentKey = await contract.getDocumentKey(tokenAddress, tokenId);
 
     var numDocuments = (await contract.documentsCount(documentKey)).toString()
 
@@ -347,9 +362,9 @@ function MyComponent() {
     for (var i = 0; i < numDocuments; i++) {      
       var record = await contract.documents(documentKey, i)
 
-      var checksumAddress = ethers.utils.getAddress("0x6fC21092DA55B392b045eD78F4732bff3C580e2c")
       
       // look up if there's an ENS name for this address
+      var checksumAddress = ethers.utils.getAddress(record.dictator)
       record.ensName = await provider.lookupAddress(checksumAddress)
 
       documents.splice(0, 0, record)      
@@ -391,8 +406,9 @@ function MyComponent() {
 
   return (
     <div>
-      <br/>
-      <label><i>NFT Scribe</i> is a ...</label>
+      <div className="padded-div">
+        <label><i>NFT Scribe</i> is a smart contract that allows ERC721 owners to append onchain messages and annotations to their tokens.</label>
+      </div>
       <hr/>
         <div className="center-header-images-container">
           <div className="inner-header-images">
@@ -469,13 +485,12 @@ function MyComponent() {
               }
             </div>        
           </div>
-
-      <hr/>        
-        <label><b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@conlan</a></b> | </label>
-        <span>⛓</span>
-        <label>{getNetworkName(chainId)}</label>
-        <br/>
-        <br/>
+      <hr/>
+        <div className="padded-div">
+          <label><b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@conlan</a></b> | </label>
+          
+          <label>⛓{getNetworkName(chainId)}</label>
+        </div>
     </div>
   );
 }
