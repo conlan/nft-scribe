@@ -198,8 +198,8 @@ function MyComponent() {
 
     tokenId = parseInt(tokenId)
 
-    if (isNaN(tokenId)) {
-      return null;
+    if ((isNaN(tokenId)) || (tokenId < 0)) {
+      return null;    
     }
 
     return tokenId;
@@ -435,7 +435,7 @@ function MyComponent() {
                   <input id="tokenAddress" placeholder="0x..." defaultValue="0x6Da7DD22A9c1B6bC7b2Ba9A540A37EC786E30eA7"/>
               
                 <label><b>Token ID</b></label>
-                  <input id="tokenId" type="number" placeholder="0, 1, 2, 3..." min="1" defaultValue="0"/>
+                  <input id="tokenId" type="number" placeholder="0, 1, 2, 3..." min="0" defaultValue="0"/>
             
               <div className="button-container">
                 {!!(library && account) && (
