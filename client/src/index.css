@@ -47,8 +47,36 @@ label {
   color: #909090;
 }
 
+div.record-line {
+  margin-bottom: 20px;
+  border-style: dotted;
+  border-width: 1px;
+  border-color: #8899a6;
+  padding:10px;
+}
+
 label.record-line {
   color: #FFFFFF;
+}
+
+a {
+  color: #8899a6;
+}
+
+a:visited {
+  color: #8899a6;
+}
+
+a:hover {
+  color: #8899a6;
+}
+
+a:active {
+  color: #8899a6;
+}
+
+span.timestamp {
+  color: #8899a6; 
 }
 
 .main-section {

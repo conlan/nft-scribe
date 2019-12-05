@@ -68,6 +68,10 @@ function App() {
   );
 }
 
+function getShortName(recordDictator) {
+  return "0x33b93...3243"
+}
+
 function MyComponent() {  
   const context = useWeb3React();
   const {
@@ -104,12 +108,14 @@ function MyComponent() {
       }
 
       if (record.ensName === null) {
-        documentTable.push(<div key={dictation + record.creationTime.toString()}>
-          <label className="record-line"><a href={recordLink} rel="noopener noreferrer" target="_blank">{record.dictator}</a> "{dictation}" {humanReadableTime} </label>
+        var shortName =  getShortName(record.dictator)
+
+        documentTable.push(<div className="record-line" key={dictation + record.creationTime.toString()}>
+          <label className="record-line"><b><a href={recordLink} rel="noopener noreferrer" target="_blank">{shortName}</a></b><span className="timestamp"> • ({humanReadableTime})</span><br/><br/>{dictation}</label>
         </div>)
       } else {
-        documentTable.push(<div key={record.creationTime.toString()}>
-          <label className="record-line">{record.ensName} "{dictation}" {humanReadableTime} </label>
+        documentTable.push(<div className="record-line" key={record.creationTime.toString()}>
+          <label className="record-line"><b><a href={recordLink} rel="noopener noreferrer" target="_blank">{record.ensName}</a></b><span className="timestamp"> • ({humanReadableTime})</span><br/><br/>{dictation}</label>          
         </div>)
       }
       
