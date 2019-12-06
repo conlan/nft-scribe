@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c6414d4ad720a76729318fef09cf2eef",
+    "revision": "c83a7f7c88c52e3273af4e26a2639693",
     "url": "/nft-scribe/index.html"
   },
   {
