@@ -5409,6 +5409,45 @@
     "version": "0.5.12+commit.7709ece9.Emscripten.clang"
   },
   "networks": {
+    "1": {
+      "events": {
+        "0xabee502eeb408864240f4a84efbde94cd093a32e171ab957fca4b11565761e06": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "dictator",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "text",
+              "type": "string"
+            }
+          ],
+          "name": "Record",
+          "type": "event",
+          "signature": "0xabee502eeb408864240f4a84efbde94cd093a32e171ab957fca4b11565761e06"
+        }
+      },
+      "links": {},
+      "address": "0xC207efACb12a126D382fA28460BB815F336D845f",
+      "transactionHash": "0x7c5393558612e5bbfaf39f992b77753e5a2e37f0e34047d52a53b60a24e6782c"
+    },
     "3": {
       "events": {
         "0xabee502eeb408864240f4a84efbde94cd093a32e171ab957fca4b11565761e06": {
@@ -5529,7 +5568,8 @@
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2019-12-02T20:22:36.094Z",
+  "updatedAt": "2019-12-05T23:12:56.795Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },

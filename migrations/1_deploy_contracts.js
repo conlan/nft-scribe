@@ -4,11 +4,11 @@ const MyERC721 = artifacts.require("./MyERC721.sol");
 module.exports = async function(deployer) {
   await deployer.deploy(Scribe);
   
-  await deployer.deploy(MyERC721, "MyERC721 Token", "MyERC721")
+  // await deployer.deploy(MyERC721, "MyERC721 Token", "MyERC721")
   
-  let erc721Instance = await MyERC721.deployed()
+  // let erc721Instance = await MyERC721.deployed()
     
-  await erc721Instance.mintUniqueTokenTo("0x2c175DC859442E84914C6c7fFd3c06819c91bb55", 0, "Test")
+  // await erc721Instance.mintUniqueTokenTo("0x2c175DC859442E84914C6c7fFd3c06819c91bb55", 0, "Test")
   
   // await erc721Instance.mintUniqueTokenTo("0xaa60e4BC5f613C3d51f6b7e6EF174B18a944fada", 1, "Test")
 
