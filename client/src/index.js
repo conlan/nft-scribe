@@ -25,9 +25,9 @@ const ethers = require('ethers');
 const SCRIBE_CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"dictator","type":"address","indexed":false},{"internalType":"address","name":"tokenAddress","type":"address","indexed":false},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"text","type":"string"}],"type":"event","anonymous":false,"name":"Record"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"string","name":"_text","type":"string"}],"name":"dictate","type":"function","constant":false,"outputs":[],"payable":false,"stateMutability":"nonpayable"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"documents","type":"function","constant":true,"outputs":[{"internalType":"address","name":"dictator","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"creationTime","type":"uint256"}],"payable":false,"stateMutability":"view"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"}],"name":"documentsCount","type":"function","constant":true,"outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view"},{"constant":true,"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getDocumentKey","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}]
 const ERC721_CONTRACT_ABI = [{"constant":true,"inputs":[{"name":"_tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"name":"_owner","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}]
 
-// const SCRIBE_CONTRACT_ADDRESS = "0x9831151655180132E6131AB35A82a5e32C149116" // Ropsten
-const SCRIBE_CONTRACT_ADDRESS = "0x284Dc68Afe4b30793acb7507a0Ae029d91bf698e" // Goerli
-// const SCRIBE_CONTRACT_ADDRESS = "..." // Mainnet
+const SCRIBE_CONTRACT_ADDRESS_ROPSTEN = "0x9831151655180132E6131AB35A82a5e32C149116" // Ropsten
+const SCRIBE_CONTRACT_ADDRESS_GOERLI = "0x284Dc68Afe4b30793acb7507a0Ae029d91bf698e" // Goerli
+const SCRIBE_CONTRACT_ADDRESS_MAINNET = "0xC207efACb12a126D382fA28460BB815F336D845f" // Mainnet
 
 var currentTokenAddress = "";
 var currentTokenId = 0;
@@ -178,6 +178,18 @@ function MyComponent() {
     return dictation;
   }
 
+  function getScribeContractAddress(chainId) {
+    if (chainId === 1) {
+      return SCRIBE_CONTRACT_ADDRESS_MAINNET;
+    } else if (chainId === 3) {
+      return SCRIBE_CONTRACT_ADDRESS_ROPSTEN
+    } else if (chainId === 5) {
+      return SCRIBE_CONTRACT_ADDRESS_GOERLI;
+    }
+
+    return ""
+  }
+
   // get the name of the network for a chain id
   function getNetworkName(chainId) {
     if (chainId === 1) {
@@ -266,7 +278,7 @@ function MyComponent() {
     )
 
     const tx = {
-      to: SCRIBE_CONTRACT_ADDRESS,
+      to: getScribeContractAddress(chainId),
       data: calldata,      
       gasPrice: ethers.utils.bigNumberify(gasPrice * 1000000000)
     }
@@ -311,6 +323,26 @@ function MyComponent() {
     return true;
   }
 
+  function getTitleFromOpenSeaAsset(asset, tokenId) {
+    if (asset.name === null) {
+      if (asset.asset_contract !== null) {
+        if (asset.asset_contract.name !== null) {
+          return asset.asset_contract.name + " #" + tokenId
+        }
+      }
+    } else {
+      return asset.name;
+    }
+  }
+
+  function getPreviewFromOpenSeaAsset(asset) {    
+    if (asset.image_url === null) {
+      return ""; 
+    }    
+
+    return asset.image_url;
+  }
+
   function loadTokenPreview(callback) {  
     // reset preview and title
     setNFTSamplePreviewURL("")
@@ -326,12 +358,16 @@ function MyComponent() {
       method: 'POST',
       headers: {'Content-Type':'application/json'},      
     }).then(response => response.json()).then(response => {
-      if (response.assets.length > 0) {
-        console.log(response.assets[0].image_preview_url)
-        setNFTSamplePreviewURL(response.assets[0].image_preview_url)
-        setNFTSampleTitle(response.assets[0].name)
+      
+      console.log(response)
+
+      if (response.assets.length > 0) {        
+        setNFTSamplePreviewURL(getPreviewFromOpenSeaAsset(response.assets[0]));
+
+        setNFTSampleTitle(getTitleFromOpenSeaAsset(response.assets[0], currentTokenId));
       } else {
         setNFTSamplePreviewURL("image-not-found.png")
+        
         setNFTSampleTitle("n/a")
       }
 
@@ -361,7 +397,7 @@ function MyComponent() {
 
     var provider = ethers.getDefaultProvider(chainId)
     
-    var contract = new ethers.Contract(SCRIBE_CONTRACT_ADDRESS, SCRIBE_CONTRACT_ABI, provider)
+    var contract = new ethers.Contract(getScribeContractAddress(chainId), SCRIBE_CONTRACT_ABI, provider)
 
     var documentKey = await contract.getDocumentKey(tokenAddress, tokenId)
 
@@ -498,7 +534,7 @@ function MyComponent() {
           </div>
       <hr/>
         <div className="padded-div">
-          <label><b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@conlan</a></b> | </label>
+          <label><b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
           
           <label>⛓{getNetworkName(chainId)}</label>
         </div>

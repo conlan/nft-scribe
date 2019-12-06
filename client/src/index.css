@@ -121,7 +121,7 @@ img.nft-overlay {
 }
 
 label.nft-overlay {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.8);
   color: #000000;
   position: absolute;
   bottom: 0;
