@@ -479,7 +479,7 @@ function MyComponent() {
           <div>
             <div className="main-section">
                 <label><b>Token Address</b></label>
-                  <input id="tokenAddress" placeholder="0x..." defaultValue="0x6Da7DD22A9c1B6bC7b2Ba9A540A37EC786E30eA7"/>
+                  <input id="tokenAddress" placeholder="0x..."/>
               
                 <label><b>Token ID</b></label>
                   <input id="tokenId" type="number" placeholder="0, 1, 2, 3..." min="0" defaultValue="0"/>
