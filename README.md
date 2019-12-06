@@ -1,4 +1,3 @@
-**NFT Scribe**  
 A smart contract that allows ERC721 owners to append onchain messages and annotations to their tokens.
 
 Deployed contracts:
