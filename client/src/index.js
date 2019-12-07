@@ -345,8 +345,10 @@ function MyComponent() {
 
   function loadTokenPreview(callback) {  
     // reset preview and title
-    setNFTSamplePreviewURL("")
-    setNFTSampleTitle("")
+    setNFTPreviewData({
+    	url : "",
+    	title : ""
+    })
 
     var tokenId = getTokenIDInput();
     var tokenAddress = getTokenAddressInput();
@@ -362,56 +364,67 @@ function MyComponent() {
       method: 'POST',
       headers: {'Content-Type':'application/json'},      
     }).then(response => response.json()).then(response => {
-      
-      console.log(response)
+    	var previewURL = "";
+    	var nftTitle = "";
 
-      if (response.assets.length > 0) {        
-        if (getPreviewFromOpenSeaAsset(response.assets[0]).length !== 0) {
-          setNFTSamplePreviewURL(getPreviewFromOpenSeaAsset(response.assets[0]));
-        }
+		console.log(response)
 
-        setNFTSampleTitle(getTitleFromOpenSeaAsset(response.assets[0], tokenId));
-      } else {
-        setNFTSamplePreviewURL("image-not-found.png")
-        
-        setNFTSampleTitle("n/a")
-      }
+		if (response.assets.length > 0) {        
+			if (getPreviewFromOpenSeaAsset(response.assets[0]).length !== 0) {
+				previewURL = getPreviewFromOpenSeaAsset(response.assets[0]);
+			}
 
-      callback().catch(error => {
-          window.alert(error)
+			nftTitle = getTitleFromOpenSeaAsset(response.assets[0], tokenId);
+		} else {
+			previewURL = "image-not-found.png";
+			nftTitle = "n/a"			
+		}
 
-          resetToUnloadedState();
-      });
+		setNFTPreviewData({
+			url : previewURL,
+			title : nftTitle
+		})
+
+		callback().catch(error => {
+		  window.alert(error)
+
+		  resetToUnloadedState();
+		});
+
+		  // Get the details from the token URI
+		var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI, ethers.getDefaultProvider(chainId))
+
+		tokenContract.tokenURI(tokenId).then(tokenUri => {
+		  try {
+		    let tokenUriParsed = JSON.parse(tokenUri)
+
+		    if (!!tokenUriParsed.ipfs) {
+		    	var currentTitle = NFTPreviewData.title;
+		    	
+		      	setNFTPreviewData({
+		  			url : "https://ipfs.infura.io/ipfs/" + tokenUriParsed.ipfs,
+		  			title : nftTitle
+		  		})
+		    }        
+		  } catch (e) {
+		    // ignore error, many tokens will error since not a json object
+		  }
+		}).catch((e) => {
+		  // ignore error, any token that doesn't have the `tokenURI` function will fail here.
+		})
     }).catch(error => {      
       window.alert(error)
 
       resetToUnloadedState();
     })
-
-    // // Get the details from the token URI
-    var tokenId = getTokenIDInput()
-    var provider = ethers.getDefaultProvider(chainId)
-    var tokenAddress = getTokenAddressInput();
-
-    var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI, provider)
-    tokenContract.tokenURI(tokenId).then(tokenUri => {
-      try {
-        let tokenUriParsed = JSON.parse(tokenUri)
-        if (!!tokenUriParsed.ipfs) {
-          setNFTSamplePreviewURL("https://ipfs.infura.io/ipfs/" + tokenUriParsed.ipfs);
-        }
-      } catch (e) {
-        // ignore error, many tokens will error since not a json object
-      }
-    }).catch((e) => {
-      // ignore error, any token that doesn't have the `tokenURI` function will fail here.
-    })
   }
 
   function resetToUnloadedState() {
     // reset preview and title
-    setNFTSamplePreviewURL("")
-    setNFTSampleTitle("")
+    setNFTPreviewData({
+		url : "",
+		title : ""
+	})
 
     setLoadingState(LoadingState.UNLOADED)
   }
@@ -458,9 +471,11 @@ function MyComponent() {
   }
 
   const [isTokenOwner, setIsTokenOwner] = React.useState(false);
-
-  const [NFTSamplePreviewURL, setNFTSamplePreviewURL] = React.useState("");
-  const [NFTSampleTitle, setNFTSampleTitle] = React.useState("");
+  
+  const [NFTPreviewData, setNFTPreviewData] = React.useState({
+  	url : "",
+  	title : "",
+  });
 
   // handle logic to recognize the connector currently being activated
   const [activatingConnector, setActivatingConnector] = React.useState();
@@ -486,11 +501,11 @@ function MyComponent() {
           <div className="inner-header-images">
             <img className="hero-image" src="scribe.gif" alt="Scribe"/>
             
-            {(NFTSamplePreviewURL.length === 0) && (<img className="nft-outline" alt="Outline" src="nft_outline.png"/>)}
+            {(NFTPreviewData.url.length === 0) && (<img className="nft-outline" alt="Outline" src="nft_outline.png"/>)}
 
-            {(NFTSamplePreviewURL.length !== 0) && (<img alt="Token" className="nft-overlay" src={NFTSamplePreviewURL}/>)}
+            {(NFTPreviewData.url.length !== 0) && (<img alt="Token" className="nft-overlay" src={NFTPreviewData.url}/>)}
 
-            {(NFTSampleTitle.length !== 0) && (<label className="nft-overlay" >{NFTSampleTitle}</label>)}
+            {(NFTPreviewData.title.length !== 0) && (<label className="nft-overlay" >{NFTPreviewData.title}</label>)}
 
             {
               ((loadingState === LoadingState.LOADING_RECORDS) || (loadingState === LoadingState.SUBMITTING_DICTATION))
