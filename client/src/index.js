@@ -336,11 +336,11 @@ function MyComponent() {
   }
 
   function getPreviewFromOpenSeaAsset(asset) {    
-    if (asset.image_url === null) {
+    if (asset.image_preview_url === null) {
       return ""; 
     }    
 
-    return asset.image_url;
+    return asset.image_preview_url;
   }
 
   function loadTokenPreview(callback) {  
@@ -349,9 +349,11 @@ function MyComponent() {
     setNFTSampleTitle("")
 
     var tokenId = getTokenIDInput();
+    var tokenAddress = getTokenAddressInput();
+
 
     // TODO insert developer API Key
-    var openseaURL = "https://api.opensea.io/api/v1/assets?token_ids=" + tokenId + "&asset_contract_address=" + getTokenAddressInput()
+    var openseaURL = "https://api.opensea.io/api/v1/assets?token_ids=" + tokenId + "&asset_contract_address=" + tokenAddress;
 
     console.log(openseaURL)
                         
@@ -391,8 +393,8 @@ function MyComponent() {
     var provider = ethers.getDefaultProvider(chainId)
     var tokenAddress = getTokenAddressInput();
 
-    var tokenContract = new ethers.Contract(currentTokenAddress, ERC721_CONTRACT_ABI, provider)
-    tokenContract.tokenURI(currentTokenId).then(tokenUri => {
+    var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI, provider)
+    tokenContract.tokenURI(tokenId).then(tokenUri => {
       try {
         let tokenUriParsed = JSON.parse(tokenUri)
         if (!!tokenUriParsed.ipfs) {
@@ -557,7 +559,7 @@ function MyComponent() {
           </div>
       <hr/>
         <div className="padded-div">
-          <label>Version 1.0 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
+          <label>Version 1.0.1 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
           
           <label>⛓{getNetworkName(chainId)}</label>     
           <br/>
