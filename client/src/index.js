@@ -348,8 +348,10 @@ function MyComponent() {
     setNFTSamplePreviewURL("")
     setNFTSampleTitle("")
 
+    var tokenId = getTokenIDInput();
+
     // TODO insert developer API Key
-    var openseaURL = "https://api.opensea.io/api/v1/assets?token_ids=" + getTokenIDInput() + "&asset_contract_address=" + getTokenAddressInput()
+    var openseaURL = "https://api.opensea.io/api/v1/assets?token_ids=" + tokenId + "&asset_contract_address=" + getTokenAddressInput()
 
     console.log(openseaURL)
                         
@@ -364,7 +366,7 @@ function MyComponent() {
       if (response.assets.length > 0) {        
         setNFTSamplePreviewURL(getPreviewFromOpenSeaAsset(response.assets[0]));
 
-        setNFTSampleTitle(getTitleFromOpenSeaAsset(response.assets[0], currentTokenId));
+        setNFTSampleTitle(getTitleFromOpenSeaAsset(response.assets[0], tokenId));
       } else {
         setNFTSamplePreviewURL("image-not-found.png")
         
@@ -534,9 +536,11 @@ function MyComponent() {
           </div>
       <hr/>
         <div className="padded-div">
-          <label><b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
+          <label>Version 1.0 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
           
-          <label>⛓{getNetworkName(chainId)}</label>
+          <label>⛓{getNetworkName(chainId)}</label>     
+          <br/>
+          <label>Please use at your own risk and double check <a href="https://ethgasstation.info/" target="_blank" rel="noopener noreferrer">gas price</a> before submitting transaction ⛽</label>     
         </div>
     </div>
   );
