@@ -429,6 +429,14 @@ function MyComponent() {
     setLoadingState(LoadingState.UNLOADED)
   }
 
+  function onLoadTokenClicked() {
+    if (checkValidToken()) {
+      setLoadingState(LoadingState.LOADING_RECORDS)
+
+      loadTokenPreview(loadToken)                        
+    }
+  }
+
   async function loadToken() {
     var tokenAddress = getTokenAddressInput();
     var tokenId = getTokenIDInput()    
@@ -527,11 +535,7 @@ function MyComponent() {
               <div className="button-container">
                 {!!(library && account) && (
                   <button disabled={(loadingState === LoadingState.LOADING_RECORDS)}  className="load-erc" onClick={() => {
-                      if (checkValidToken()) {
-                        setLoadingState(LoadingState.LOADING_RECORDS)
-
-                        loadTokenPreview(loadToken)                        
-                      }
+                      onLoadTokenClicked()                      
                     }}
                   ><b>Load ERC721</b></button>
                 )}
@@ -574,11 +578,15 @@ function MyComponent() {
           </div>
       <hr/>
         <div className="padded-div">
-          <label>Version 1.0.2 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
+          <label>Version 1.0.3 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
           
           <label>⛓{getNetworkName(chainId)}</label>     
           <br/>
-          <label>Please use at your own risk and double check <a href="https://ethgasstation.info/" target="_blank" rel="noopener noreferrer">gas price</a> before submitting transaction ⛽</label>     
+          <label>Please use at your own risk and double check <a href="https://ethgasstation.info/" target="_blank" rel="noopener noreferrer">gas price</a> before submitting transaction ⛽</label>               
+          <br/>
+          <label>Image and name metadata powered by <a href="https://opensea.io/" target="_blank" rel="noopener noreferrer">OpenSea</a></label>
+          <br/>
+          <label><a href="https://giphy.com/stickers/geometric-heysp-illustrated-geometry-c6XT7hN1iSuUoNxD1b" target="_blank" rel="noopener noreferrer">Loading GIF Source</a></label>          
         </div>
     </div>
   );
