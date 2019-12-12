@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/nft-scribe/static/css/main.5ebd4c27.chunk.css",
-    "main.js": "/nft-scribe/static/js/main.863785db.chunk.js",
-    "main.js.map": "/nft-scribe/static/js/main.863785db.chunk.js.map",
+    "main.css": "/nft-scribe/static/css/main.b183de39.chunk.css",
+    "main.js": "/nft-scribe/static/js/main.68ce58bf.chunk.js",
+    "main.js.map": "/nft-scribe/static/js/main.68ce58bf.chunk.js.map",
     "runtime-main.js": "/nft-scribe/static/js/runtime-main.9db26acb.js",
     "runtime-main.js.map": "/nft-scribe/static/js/runtime-main.9db26acb.js.map",
-    "static/js/2.a454dd55.chunk.js": "/nft-scribe/static/js/2.a454dd55.chunk.js",
-    "static/js/2.a454dd55.chunk.js.map": "/nft-scribe/static/js/2.a454dd55.chunk.js.map",
+    "static/js/2.80ff173a.chunk.js": "/nft-scribe/static/js/2.80ff173a.chunk.js",
+    "static/js/2.80ff173a.chunk.js.map": "/nft-scribe/static/js/2.80ff173a.chunk.js.map",
     "index.html": "/nft-scribe/index.html",
-    "precache-manifest.76db21d37dfe7e9778d23b567a916df4.js": "/nft-scribe/precache-manifest.76db21d37dfe7e9778d23b567a916df4.js",
+    "precache-manifest.0ebe8fb23399b356ac1e8f2ac761b315.js": "/nft-scribe/precache-manifest.0ebe8fb23399b356ac1e8f2ac761b315.js",
     "service-worker.js": "/nft-scribe/service-worker.js",
-    "static/css/main.5ebd4c27.chunk.css.map": "/nft-scribe/static/css/main.5ebd4c27.chunk.css.map"
+    "static/css/main.b183de39.chunk.css.map": "/nft-scribe/static/css/main.b183de39.chunk.css.map"
   },
   "entrypoints": [
     "static/js/runtime-main.9db26acb.js",
-    "static/js/2.a454dd55.chunk.js",
-    "static/css/main.5ebd4c27.chunk.css",
-    "static/js/main.863785db.chunk.js"
+    "static/js/2.80ff173a.chunk.js",
+    "static/css/main.b183de39.chunk.css",
+    "static/js/main.68ce58bf.chunk.js"
   ]
 }
