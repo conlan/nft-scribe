@@ -32,6 +32,8 @@ const SCRIBE_CONTRACT_ADDRESS_MAINNET = "0xC207efACb12a126D382fA28460BB815F336D8
 var currentTokenAddress = "";
 var currentTokenId = 0;
 
+var didCheckForURLParams = false;
+var isWaitingForValidChainToAutoload = false;
 
 const LoadingState = {
     UNLOADED: 0,
@@ -73,7 +75,7 @@ function getShortName(recordDictator) {
   return "0x33b93...3243"
 }
 
-function MyComponent() {  
+function MyComponent(props) {  
   const context = useWeb3React();
   const {
     connector,
@@ -201,13 +203,8 @@ function MyComponent() {
     }
   }
 
-  // Return the currently inputted token id
-  function getTokenIDInput() {
-    var tokenAddressField = document.getElementById("tokenId")
-
-    var tokenId = tokenAddressField.value.trim()
-
-    tokenId = parseInt(tokenId)
+  function cleanTokenInput(tokenIdCandidate) {
+    var tokenId = parseInt(tokenIdCandidate)
 
     if ((isNaN(tokenId)) || (tokenId < 0)) {
       return null;    
@@ -215,20 +212,33 @@ function MyComponent() {
 
     return tokenId;
   }
-  
-  // Return the currently inputted token address
-  function getTokenAddressInput() {
-    var tokenAddressField = document.getElementById("tokenAddress")
 
-    var address = tokenAddressField.value;
-    
+  // Return the currently inputted token id
+  function getTokenIDInput() {
+    var tokenAddressField = document.getElementById("tokenId")
+
+    var tokenId = tokenAddressField.value.trim()
+
+    return cleanTokenInput(tokenId)
+  }
+
+  function cleanAddressInput(tokenAddressCandidate) {
     try {
-      var checksumAddress = ethers.utils.getAddress(address)
+      var checksumAddress = ethers.utils.getAddress(tokenAddressCandidate)
 
       return checksumAddress;
     } catch (e) {
       return null;
-    }    
+    } 
+  }
+  
+  // Return the currently inputted token address
+  function getTokenAddressInput() {    
+    var tokenAddressField = document.getElementById("tokenAddress")
+
+    var address = tokenAddressField.value;
+
+    return cleanAddressInput(address)  
   }
 
   // Retrieve the fast gas price from ETHGasStation
@@ -367,55 +377,53 @@ function MyComponent() {
     	var previewURL = "";
     	var nftTitle = "";
 
-		console.log(response)
+		  console.log(response)
 
-		if (response.assets.length > 0) {        
-			if (getPreviewFromOpenSeaAsset(response.assets[0]).length !== 0) {
-				previewURL = getPreviewFromOpenSeaAsset(response.assets[0]);
-			}
+  		if (response.assets.length > 0) {        
+  			if (getPreviewFromOpenSeaAsset(response.assets[0]).length !== 0) {
+  				previewURL = getPreviewFromOpenSeaAsset(response.assets[0]);
+  			}
 
-			nftTitle = getTitleFromOpenSeaAsset(response.assets[0], tokenId);
-		} else {
-			previewURL = "image-not-found.png";
-			nftTitle = "n/a"			
-		}
+  			nftTitle = getTitleFromOpenSeaAsset(response.assets[0], tokenId);
+  		} else {
+  			previewURL = "image-not-found.png";
+  			nftTitle = "n/a"			
+  		}
 
-		setNFTPreviewData({
-			url : previewURL,
-			title : nftTitle
-		})
+  		setNFTPreviewData({
+  			url : previewURL,
+  			title : nftTitle
+  		})
 
-		callback().catch(error => {
-		  window.alert(error)
+  		callback().catch(error => {
+  		  window.alert(error)
 
-		  resetToUnloadedState();
-		});
+  		  resetToUnloadedState();
+  		});
 
 		  // Get the details from the token URI
-		var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI, ethers.getDefaultProvider(chainId))
+	 	 var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI, ethers.getDefaultProvider(chainId))
 
-		tokenContract.tokenURI(tokenId).then(tokenUri => {
-		  try {
-		    let tokenUriParsed = JSON.parse(tokenUri)
+  		tokenContract.tokenURI(tokenId).then(tokenUri => {
+  		  try {
+  		    let tokenUriParsed = JSON.parse(tokenUri)
 
-		    if (!!tokenUriParsed.ipfs) {
-		    	var currentTitle = NFTPreviewData.title;
-		    	
-		      	setNFTPreviewData({
-		  			url : "https://ipfs.infura.io/ipfs/" + tokenUriParsed.ipfs,
-		  			title : nftTitle
-		  		})
-		    }        
-		  } catch (e) {
-		    // ignore error, many tokens will error since not a json object
-		  }
-		}).catch((e) => {
-		  // ignore error, any token that doesn't have the `tokenURI` function will fail here.
-		})
-    }).catch(error => {      
-      window.alert(error)
+  		    if (!!tokenUriParsed.ipfs) {
+  		    	setNFTPreviewData({
+  	  		  	url : "https://ipfs.infura.io/ipfs/" + tokenUriParsed.ipfs,
+  		  			title : nftTitle
+  		  		})
+  		    }        
+  		  } catch (e) {
+  		    // ignore error, many tokens will error since not a json object
+  		  }
+  		}).catch((e) => {
+  		  // ignore error, any token that doesn't have the `tokenURI` function will fail here.
+  		})
+      }).catch(error => {      
+        window.alert(error)
 
-      resetToUnloadedState();
+        resetToUnloadedState();
     })
   }
 
@@ -499,6 +507,59 @@ function MyComponent() {
   // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
   useInactiveListener(!triedEager || !!activatingConnector);
 
+  // check if a token address + token ID were put into the URL
+  if (didCheckForURLParams === false) {
+    didCheckForURLParams = true;
+
+    try {
+      // check for URL Search Params support
+      if ("URLSearchParams" in window) {
+        // extract token address from URL if found
+        var urlParams = new URLSearchParams(window.location.search);
+
+        var autoLoadAddress = null;
+        var autoLoadId = null;
+
+        if (urlParams.has("address")) {
+          var addressInput = urlParams.get("address");
+          
+          // validate the address input before assuming it's a valid address
+          autoLoadAddress = cleanAddressInput(addressInput)
+        }
+
+        if (urlParams.has("id")) {
+          var idInput = urlParams.get("id");
+
+          // validate the id before assuming it's a valid id
+          autoLoadId = cleanTokenInput(idInput)
+        }
+      }
+
+      // check if we received some parameters in the URL
+      if ((autoLoadAddress !== null) && (autoLoadId !== null)) {
+        console.log("found valid address + id, loading token...")
+
+        window.requestAnimationFrame(function() {  
+          document.getElementById("tokenAddress").value = autoLoadAddress;
+
+          document.getElementById("tokenId").value = autoLoadId;
+
+          isWaitingForValidChainToAutoload = true;          
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  if (isWaitingForValidChainToAutoload) {
+    if (getScribeContractAddress(chainId).length > 0) {
+      isWaitingForValidChainToAutoload = false;
+
+      onLoadTokenClicked()
+    }
+  } 
+
   return (
     <div>
       <div className="padded-div">
@@ -578,7 +639,7 @@ function MyComponent() {
           </div>
       <hr/>
         <div className="padded-div">
-          <label>Version 1.0.3 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
+          <label>Version 1.0.4 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | </label>
           
           <label>⛓{getNetworkName(chainId)}</label>     
           <br/>
