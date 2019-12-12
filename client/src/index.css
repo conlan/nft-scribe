@@ -138,6 +138,20 @@ label.nft-overlay {
   height:auto;
 }
 
+img.share-button {
+  position:absolute;
+  bottom: 40%;
+  right: 0;
+  
+  width:10%;
+  height:10%;
+  object-fit: contain;
+}
+
+img.share-button:hover {
+    cursor: pointer;
+}
+
 .button-container {
   height:50px;
   padding: 12px 0px;

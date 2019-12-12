@@ -437,6 +437,34 @@ function MyComponent(props) {
     setLoadingState(LoadingState.UNLOADED)
   }
 
+  function generateShareLink() {
+      var tokenId = getTokenIDInput();
+      var tokenAddress = getTokenAddressInput();
+
+      return "https://conlan.github.io/nft-scribe/?address=" + tokenAddress + "&id=" + tokenId;
+  }
+
+  function onCopyLinkClicked() {
+    if (checkValidToken()) {
+      var shareLink = generateShareLink();
+
+      copyToClipboard(shareLink);
+
+      // check the share button source to copied
+      document.getElementById("share-button").src="copy-complete.png";      
+    }
+  }
+
+  function copyToClipboard(e) {
+    var textField = document.createElement('textarea')
+    
+    textField.innerText = e;
+    document.body.appendChild(textField)
+    textField.select()
+    document.execCommand('copy')
+    textField.remove()
+  };
+
   function onLoadTokenClicked() {
     if (checkValidToken()) {
       setLoadingState(LoadingState.LOADING_RECORDS)
@@ -580,6 +608,13 @@ function MyComponent(props) {
               ((loadingState === LoadingState.LOADING_RECORDS) || (loadingState === LoadingState.SUBMITTING_DICTATION))
               && (<img alt="Spinner" className="loading-spinner" src="loading.gif"/>)
             }
+
+            {
+              (loadingState === LoadingState.LOADED) &&
+              (<img alt="Copy" id="share-button" className="share-button" src="copy.png" onClick={() => {
+                  onCopyLinkClicked();                  
+              }}/>)
+            }
             
 
           </div>
@@ -649,7 +684,7 @@ function MyComponent(props) {
           <br/>
           <label><a href="https://giphy.com/stickers/geometric-heysp-illustrated-geometry-c6XT7hN1iSuUoNxD1b" target="_blank" rel="noopener noreferrer">Loading GIF Source</a></label>          
         </div>
-    </div>
+    </div>    
   );
 }
 
