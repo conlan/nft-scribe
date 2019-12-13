@@ -148,6 +148,20 @@ img.share-button {
   object-fit: contain;
 }
 
+img.tweet-button {
+  position:absolute;
+  bottom: 30%;
+  right: 0;
+  
+  width:10%;
+  height:10%;
+  object-fit: contain;
+}
+
+img.tweet-button:hover {
+    cursor: pointer;
+}
+
 img.share-button:hover {
     cursor: pointer;
 }

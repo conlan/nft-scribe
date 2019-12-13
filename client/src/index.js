@@ -444,6 +444,62 @@ function MyComponent(props) {
       return "https://conlan.github.io/nft-scribe/?address=" + tokenAddress + "&id=" + tokenId;
   }
 
+  function getTwitterUserForContract(tokenAddress) {
+  	tokenAddress = tokenAddress.toLowerCase();
+
+  	// TODO put these in a file somewhere
+  	if ((tokenAddress === "0xb932a70A57673d89f4acfFBE830E8ed7f75Fb9e0".toLowerCase()) ||
+  		(tokenAddress === "0x41A322b28D0fF354040e2CbC676F0320d8c8850d".toLowerCase())) {
+  		return "SuperRare_co";
+  	} else if (tokenAddress === "0x1d963688FE2209A98dB35C67A041524822Cf04ff".toLowerCase()) {
+  		return "marble_cards";
+  	} else if (tokenAddress === "0x2a46f2ffd99e19a89476e2f62270e0a35bbf0756".toLowerCase()) {
+  		return "makersplaceco";
+  	} else if (tokenAddress === "0xfbeef911dc5821886e1dda71586d90ed28174b7d".toLowerCase()) {
+  		return "KnownOrigin_io";
+  	} else if (tokenAddress === "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d".toLowerCase()) {
+  		return "CryptoKitties";
+  	} else if (tokenAddress === "0x6aD0f855c97eb80665F2D0C7d8204895e052C373".toLowerCase()) {
+  		return "wildcards_world";
+  	}
+
+  	return null;
+  }
+
+  function onTweetLinkClicked() {
+  	if (checkValidToken()) {
+  		var shareLink = generateShareLink();
+
+  		var tokenName = NFTPreviewData.title;
+
+  		// trim name down and add elipsis if too long
+  		let MAX_TOKEN_NAME_LENGTH = 50;
+
+  		if (tokenName.length > MAX_TOKEN_NAME_LENGTH) {
+  			tokenName = tokenName.substring(0, MAX_TOKEN_NAME_LENGTH) + "..."
+  		}
+
+  		// detect which contract we're using and append tweet names if found
+  		var twitterUserForContract = getTwitterUserForContract(getTokenAddressInput())
+
+  		var tweetText = "See scribed messages for \"" + tokenName + "\" ";
+
+  		if (twitterUserForContract !== null) {
+  			tweetText += "(@" + twitterUserForContract + ") ";
+  		}
+
+  		tweetText += "at " + shareLink;
+
+  		tweetText = tweetText.replace("#", "")
+  	
+
+  		var tweetURL = "https://twitter.com/intent/tweet?text=" + tweetText + "&hashtags=NFT"
+
+  		window.open(tweetURL)
+  		
+  	}
+  }
+
   function onCopyLinkClicked() {
     if (checkValidToken()) {
       var shareLink = generateShareLink();
@@ -613,6 +669,13 @@ function MyComponent(props) {
               (loadingState === LoadingState.LOADED) &&
               (<img alt="Copy" id="share-button" className="share-button" src="copy.png" onClick={() => {
                   onCopyLinkClicked();                  
+              }}/>)
+            }
+
+            {
+              (loadingState === LoadingState.LOADED) &&
+              (<img alt="Copy" className="tweet-button" src="tweet.png" onClick={() => {
+				onTweetLinkClicked()
               }}/>)
             }
             
