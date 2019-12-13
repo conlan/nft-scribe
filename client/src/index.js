@@ -461,6 +461,14 @@ function MyComponent(props) {
   		return "CryptoKitties";
   	} else if (tokenAddress === "0x6aD0f855c97eb80665F2D0C7d8204895e052C373".toLowerCase()) {
   		return "wildcards_world";
+  	} else if (tokenAddress === "0x6aD0f855c97eb80665F2D0C7d8204895e052C373".toLowerCase()) {
+  		return "wildcards_world";
+  	} else if (tokenAddress === "0x102C527714AB7e652630cAc7a30Abb482B041Fd0".toLowerCase()) {
+  		return "CryptoKaijuIO";
+  	} else if (tokenAddress === "0x6EbeAf8e8E946F0716E6533A6f2cefc83f60e8Ab".toLowerCase()) {
+  		return "GodsUnchained";
+  	} else if (tokenAddress === "0x79986aF15539de2db9A5086382daEdA917A9CF0C".toLowerCase()) {
+  		return "Cryptovoxels";
   	}
 
   	return null;
@@ -737,7 +745,7 @@ function MyComponent(props) {
           </div>
       <hr/>
         <div className="padded-div">
-          <label>Version 1.0.4 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | <b><a href="https://www.cryptovoxels.com/play?coords=S@279E,418N" target="_blank" rel="noopener noreferrer">Cryptovoxels</a></b> | </label>
+          <label>Version 1.0.5 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | <b><a href="https://www.cryptovoxels.com/play?coords=S@279E,418N" target="_blank" rel="noopener noreferrer">Cryptovoxels</a></b> | </label>
           
           <label>⛓{getNetworkName(chainId)}</label>     
           <br/>
