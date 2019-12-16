@@ -72,7 +72,14 @@ function App() {
 }
 
 function getShortName(recordDictator) {
-  return "0x33b93...3243"
+  var maxLength = 20;  
+
+  if (recordDictator.length > maxLength) {
+    recordDictator = recordDictator.substring(0, maxLength / 2) + "..." + 
+      recordDictator.substring(recordDictator.length - (maxLength /2), recordDictator.length)
+  }
+
+  return recordDictator;
 }
 
 function MyComponent(props) {  
@@ -746,7 +753,7 @@ function MyComponent(props) {
           </div>
       <hr/>
         <div className="padded-div">
-          <label>Version 1.0.6 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | <b><a href="https://www.cryptovoxels.com/play?coords=S@279E,418N" target="_blank" rel="noopener noreferrer">Cryptovoxels</a></b> | </label>
+          <label>Version 1.0.7 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | <b><a href="https://www.cryptovoxels.com/play?coords=S@279E,418N" target="_blank" rel="noopener noreferrer">Cryptovoxels</a></b> | </label>
           
           <label>⛓{getNetworkName(chainId)}</label>     
           <br/>
