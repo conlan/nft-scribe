@@ -119,13 +119,7 @@ function MyComponent(props) {
       var dictation = record.text;
 
       var networkName = getNetworkName(chainId)
-      var recordLink = null;
-
-      if (networkName === "Mainnet") {
-        recordLink = "https://etherscan.io/address/" + record.dictator;
-      } else {
-        recordLink = "https://" + networkName + ".etherscan.io/address/" + record.dictator;        
-      }
+      var recordLink = getBlockchainExplorerAddress(record.dictator);
 
       if (record.ensName === null) {
         var shortName =  getShortName(record.dictator)
@@ -263,18 +257,22 @@ function MyComponent(props) {
 
   // Retrieve the fast gas price from ETHGasStation
   function getGasPrice(callback) {
-    fetch("https://ethgasstation.info/json/ethgasAPI.json").then(response => response.json()).then(response => {
-      var gasPrice = response.fast
+    if (chainId == CHAIN_ID_MAINNET_POLYGON) {
+      callback(0)
+    } else {
+      fetch("https://ethgasstation.info/json/ethgasAPI.json").then(response => response.json()).then(response => {
+        var gasPrice = response.fast
 
-      // default gas price of 10 if we got an undefined response
-      if (gasPrice === undefined) {
-        gasPrice = 10
-      } else {
-        gasPrice = gasPrice / 10
-      }
+        // default gas price of 10 if we got an undefined response
+        if (gasPrice === undefined) {
+          gasPrice = 10
+        } else {
+          gasPrice = gasPrice / 10
+        }
 
-      callback(gasPrice)
-    })
+        callback(gasPrice)
+      })
+    }
   }
 
   function checkValidDictation() {
@@ -307,8 +305,11 @@ function MyComponent(props) {
 
     const tx = {
       to: getScribeContractAddress(),
-      data: calldata,      
-      gasPrice: ethers.utils.bigNumberify(gasPrice * 1000000000)
+      data: calldata
+    }     
+
+    if (gasPrice > 0) {
+      tx.gasPrice = ethers.utils.bigNumberify(gasPrice * 1000000000)
     }
 
     var signer = library.getSigner(account);
@@ -625,15 +626,13 @@ function MyComponent(props) {
     }
   }
 
-  function getBlockchainExplorerAddress() {
-    if (chainId === CHAIN_ID_MAINNET_ETHEREUM) {
-      return "https://etherscan.io/address/" + getScribeContractAddress();
-    } else if (chainId === CHAIN_ID_TESTNET_GOERLI) {
-      return "https://goerli.etherscan.io/address/" + getScribeContractAddress();
+  function getBlockchainExplorerAddress(address) {
+    if (chainId === CHAIN_ID_TESTNET_GOERLI) {
+      return "https://goerli.etherscan.io/address/" + address;
     } else if (chainId === CHAIN_ID_MAINNET_POLYGON) {
-      return "https://polygonscan.com/address/" + getScribeContractAddress();
+      return "https://polygonscan.com/address/" + address;
     } else {
-      return "https://etherscan.io"
+      return "https://etherscan.io/address/" + address;
     }
   }
 
@@ -877,7 +876,7 @@ function MyComponent(props) {
           </div>
       <hr/>
         <div className="padded-div">
-          <label>Version {APP_VERSION} | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href={getBlockchainExplorerAddress()} target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | <b><a href="https://www.cryptovoxels.com/play?coords=S@279E,418N" target="_blank" rel="noopener noreferrer">Cryptovoxels</a></b> | </label>
+          <label>Version {APP_VERSION} | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href={getBlockchainExplorerAddress(getScribeContractAddress())} target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | <b><a href="https://www.cryptovoxels.com/play?coords=S@279E,418N" target="_blank" rel="noopener noreferrer">Cryptovoxels</a></b> | </label>
           
           <label>⛓{getNetworkName(chainId)}</label>     
           <br/>
