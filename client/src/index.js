@@ -339,15 +339,23 @@ function MyComponent(props) {
 
   function checkValidToken() {
     var tokenAddress = getTokenAddressInput();
+
+    var errorMessageSuffix = null;
+
+    if (chainId == CHAIN_ID_MAINNET_POLYGON) {
+      errorMessageSuffix = " for an ERC721 or ERC1155 contract deployed on " + getNetworkName(chainId) + ".";
+    } else {
+      errorMessageSuffix = " for an ERC721 contract deployed on " + getNetworkName(chainId) + ".";
+    }
     
     if (tokenAddress == null) {
-      window.alert("Please provide a valid address for an ERC721 contract deployed on " + getNetworkName(chainId) + ".");
+      window.alert("Please provide a valid address" + errorMessageSuffix);
       return false
     }
 
     var tokenId = getTokenIDInput()
     if (tokenId == null) {
-      window.alert("Please provide a valid tokenID for an ERC721 contract deployed on " + getNetworkName(chainId) + ".");
+      window.alert("Please provide a valid tokenID" + errorMessageSuffix);
       return false
     }
 
