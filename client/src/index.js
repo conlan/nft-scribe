@@ -28,6 +28,14 @@ const ERC721_CONTRACT_ABI = [{ "constant": true, "inputs": [{ "name": "tokenId",
 const SCRIBE_CONTRACT_ADDRESS_ROPSTEN = "0x9831151655180132E6131AB35A82a5e32C149116" // Ropsten
 const SCRIBE_CONTRACT_ADDRESS_GOERLI = "0x284Dc68Afe4b30793acb7507a0Ae029d91bf698e" // Goerli
 const SCRIBE_CONTRACT_ADDRESS_MAINNET = "0xC207efACb12a126D382fA28460BB815F336D845f" // Mainnet
+const SCRIBE_CONTRACT_ADDRESS_POLYGON = "0x1224110880FC42b49Ae08AA4E8B753337b356f4F"; // Mainnet
+
+const CHAIN_ID_MAINNET_ETHEREUM = 1;
+const CHAIN_ID_TESTNET_ROPSTEN = 3;
+const CHAIN_ID_TESTNET_GOERLI = 5;
+const CHAIN_ID_MAINNET_POLYGON = 137;
+
+const APP_VERSION = "1.1.0";
 
 var currentTokenAddress = "";
 var currentTokenId = 0;
@@ -187,13 +195,15 @@ function MyComponent(props) {
     return dictation;
   }
 
-  function getScribeContractAddress(chainId) {
-    if (chainId === 1) {
+  function getScribeContractAddress(chainId) {    
+    if (chainId === CHAIN_ID_MAINNET_ETHEREUM) {
       return SCRIBE_CONTRACT_ADDRESS_MAINNET;
-    } else if (chainId === 3) {
+    } else if (chainId === CHAIN_ID_TESTNET_ROPSTEN) {
       return SCRIBE_CONTRACT_ADDRESS_ROPSTEN
-    } else if (chainId === 5) {
+    } else if (chainId === CHAIN_ID_TESTNET_GOERLI) {
       return SCRIBE_CONTRACT_ADDRESS_GOERLI;
+    } else if (chainId === CHAIN_ID_MAINNET_POLYGON) {
+      return SCRIBE_CONTRACT_ADDRESS_POLYGON;
     }
 
     return ""
@@ -201,10 +211,12 @@ function MyComponent(props) {
 
   // get the name of the network for a chain id
   function getNetworkName(chainId) {
-    if (chainId === 1) {
-      return "Mainnet"
-    } else if (chainId === 5) {
-      return "Goerli"
+    if (chainId === CHAIN_ID_MAINNET_ETHEREUM) {
+      return "Mainnet - Ethereum"
+    } else if (chainId === CHAIN_ID_TESTNET_GOERLI) {
+      return "Testnet - Goerli"
+    } else if (chainId === CHAIN_ID_MAINNET_POLYGON) {
+      return "Mainnet - Polygon"
     } else {
       return "..."
     }
@@ -329,13 +341,13 @@ function MyComponent(props) {
     var tokenAddress = getTokenAddressInput();
     
     if (tokenAddress == null) {
-      window.alert("Please provide a valid ERC721 contract address.")
+      window.alert("Please provide a valid address for an ERC721 contract deployed on " + getNetworkName(chainId) + ".");
       return false
     }
 
     var tokenId = getTokenIDInput()
     if (tokenId == null) {
-      window.alert("Please provide a valid ERC721 token ID.") 
+      window.alert("Please provide a valid tokenID for an ERC721 contract deployed on " + getNetworkName(chainId) + ".");
       return false
     }
 
@@ -547,6 +559,26 @@ function MyComponent(props) {
     }
   }
 
+  function getBlockchainExplorerAddress() {
+    if (chainId === CHAIN_ID_MAINNET_ETHEREUM) {
+      return "https://etherscan.io/address/" + getScribeContractAddress(chainId);
+    } else if (chainId === CHAIN_ID_TESTNET_GOERLI) {
+      return "https://goerli.etherscan.io/address/" + getScribeContractAddress(chainId);
+    } else if (chainId === CHAIN_ID_MAINNET_POLYGON) {
+      return "https://polygonscan.com/address/" + getScribeContractAddress(chainId);
+    } else {
+      return "https://etherscan.io"
+    }
+  }
+
+  function getPageDescription() {
+    if (chainId == CHAIN_ID_MAINNET_POLYGON) {
+      return <label><i>NFT Scribe</i> is a smart contract that allows ERC721 + ERC1155 owners to append onchain messages and annotations to their tokens.<p/>The longer your message the more gas it will require!</label>;
+    } else {
+      return <label><i>NFT Scribe</i> is a smart contract that allows ERC721 owners to append onchain messages and annotations to their tokens.<p/>The longer your message the more gas it will require!</label>;
+    }
+  }
+
   async function loadToken() {
     var tokenAddress = getTokenAddressInput();
     var tokenId = getTokenIDInput()    
@@ -665,7 +697,7 @@ function MyComponent(props) {
   return (
     <div>
       <div className="padded-div">
-        <label><i>NFT Scribe</i> is a smart contract that allows ERC721 owners to append onchain messages and annotations to their tokens.<p/>The longer your message the more gas it will require!</label>
+        {getPageDescription()}
       </div>
       <hr/>
         <div className="center-header-images-container">
@@ -755,7 +787,7 @@ function MyComponent(props) {
           </div>
       <hr/>
         <div className="padded-div">
-          <label>Version 1.0.10 | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href="https://etherscan.io/address/0xC207efACb12a126D382fA28460BB815F336D845f" target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | <b><a href="https://www.cryptovoxels.com/play?coords=S@279E,418N" target="_blank" rel="noopener noreferrer">Cryptovoxels</a></b> | </label>
+          <label>Version {APP_VERSION} | <b><a href="https://github.com/conlan/nft-scribe" target="_blank" rel="noopener noreferrer">Github</a></b> | <b><a href={getBlockchainExplorerAddress()} target="_blank" rel="noopener noreferrer">Contract</a></b> | <b><a href="https://twitter.com/conlan" target="_blank" rel="noopener noreferrer">@Conlan</a></b> | <b><a href="https://www.cryptovoxels.com/play?coords=S@279E,418N" target="_blank" rel="noopener noreferrer">Cryptovoxels</a></b> | </label>
           
           <label>⛓{getNetworkName(chainId)}</label>     
           <br/>
