@@ -196,7 +196,7 @@ function MyComponent(props) {
     return dictation;
   }
 
-  function getScribeContractAddress(chainId) {    
+  function getScribeContractAddress() {    
     if (chainId === CHAIN_ID_MAINNET_ETHEREUM) {
       return SCRIBE_CONTRACT_ADDRESS_MAINNET;
     } else if (chainId === CHAIN_ID_TESTNET_ROPSTEN) {
@@ -298,8 +298,6 @@ function MyComponent(props) {
 
     console.log("Submitting dictation...")
 
-    // var provider = ethers.getDefaultProvider(chainId);
-
     var iface = new ethers.utils.Interface(SCRIBE_CONTRACT_ABI)
 
     // generate the call data for the dictation
@@ -308,7 +306,7 @@ function MyComponent(props) {
     )
 
     const tx = {
-      to: getScribeContractAddress(chainId),
+      to: getScribeContractAddress(),
       data: calldata,      
       gasPrice: ethers.utils.bigNumberify(gasPrice * 1000000000)
     }
@@ -329,7 +327,7 @@ function MyComponent(props) {
   }
 
   async function waitForTransaction(tx) {
-    var provider = ethers.getDefaultProvider(chainId);
+    var provider = getBlockchainProvider();
 
     await provider.waitForTransaction(tx.hash)
 
@@ -394,7 +392,7 @@ function MyComponent(props) {
   }
 
   function loadTokenPreviewPolygon(tokenId, tokenAddress, callback) {
-    var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI_POLYGON, new ethers.providers.JsonRpcProvider("https://polygon-rpc.com"));
+    var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI_POLYGON, getBlockchainProvider());
 
     tokenContract.uri(tokenId).then(tokenUri => {
       console.log(tokenId)
@@ -433,6 +431,22 @@ function MyComponent(props) {
     }).catch((e) => {
       console.log(e)
     })
+  }
+
+  function getContractABI() {
+    if (chainId == CHAIN_ID_MAINNET_POLYGON) {
+      return ERC721_CONTRACT_ABI_POLYGON;
+    } else {
+      return ERC721_CONTRACT_ABI_ETHEREUM;
+    }
+  }
+
+  function getBlockchainProvider() {
+    if (chainId == CHAIN_ID_MAINNET_POLYGON) {
+      return new ethers.providers.JsonRpcProvider("https://polygon-rpc.com")
+    } else {
+      return ethers.getDefaultProvider(chainId);
+    }
   }
 
 
@@ -475,7 +489,7 @@ function MyComponent(props) {
   		});
 
 		  // Get the details from the token URI
-	 	 var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI_ETHEREUM, ethers.getDefaultProvider(chainId))
+	 	 var tokenContract = new ethers.Contract(tokenAddress, getContractABI(), getBlockchainProvider())
 
   		tokenContract.tokenURI(tokenId).then(tokenUri => {
   		  try {
@@ -613,11 +627,11 @@ function MyComponent(props) {
 
   function getBlockchainExplorerAddress() {
     if (chainId === CHAIN_ID_MAINNET_ETHEREUM) {
-      return "https://etherscan.io/address/" + getScribeContractAddress(chainId);
+      return "https://etherscan.io/address/" + getScribeContractAddress();
     } else if (chainId === CHAIN_ID_TESTNET_GOERLI) {
-      return "https://goerli.etherscan.io/address/" + getScribeContractAddress(chainId);
+      return "https://goerli.etherscan.io/address/" + getScribeContractAddress();
     } else if (chainId === CHAIN_ID_MAINNET_POLYGON) {
-      return "https://polygonscan.com/address/" + getScribeContractAddress(chainId);
+      return "https://polygonscan.com/address/" + getScribeContractAddress();
     } else {
       return "https://etherscan.io"
     }
@@ -635,9 +649,9 @@ function MyComponent(props) {
     var tokenAddress = getTokenAddressInput();
     var tokenId = getTokenIDInput()    
 
-    var provider = ethers.getDefaultProvider(chainId)
+    var provider = getBlockchainProvider()
     
-    var contract = new ethers.Contract(getScribeContractAddress(chainId), SCRIBE_CONTRACT_ABI, provider)
+    var contract = new ethers.Contract(getScribeContractAddress(), SCRIBE_CONTRACT_ABI, provider)
 
     var documentKey = await contract.getDocumentKey(tokenAddress, tokenId)
 
@@ -648,11 +662,16 @@ function MyComponent(props) {
     // TODO cache ENS names to avoid repeats    
     for (var i = 0; i < numDocuments; i++) {      
       var record = await contract.documents(documentKey, i)
-      
-      // look up if there's an ENS name for this address
-      var checksumAddress = ethers.utils.getAddress(record.dictator)
 
-      record.ensName = await provider.lookupAddress(checksumAddress)
+      if (chainId == CHAIN_ID_MAINNET_POLYGON) {      
+        // no ENS on polygon right now
+        record.ensName = record.dictator;
+      } else {
+        // look up if there's an ENS name for this address
+        var checksumAddress = ethers.utils.getAddress(record.dictator)
+
+        record.ensName = await provider.lookupAddress(checksumAddress)
+      }
 
       documents.splice(0, 0, record)      
     }
@@ -663,11 +682,20 @@ function MyComponent(props) {
     setTokenDocuments(documents)
 
     // check if we're the owner of this token
-    var tokenContract = new ethers.Contract(currentTokenAddress, ERC721_CONTRACT_ABI_ETHEREUM, provider)
+      var tokenContract = new ethers.Contract(currentTokenAddress, getContractABI(), provider)
 
-    var ownerOfTokenAddress = await tokenContract.ownerOf(currentTokenId)
-    
-    setIsTokenOwner(account === ownerOfTokenAddress)
+    var isOwner = false;
+    if (chainId == CHAIN_ID_MAINNET_POLYGON) {
+      // var ownerOfTokenAddress = await tokenContract.ownerOf(currentTokenId)
+      var balanceOfOwner = parseInt((await tokenContract.balanceOf(account, currentTokenId)).toString());
+
+      isOwner = (balanceOfOwner > 0);
+    } else {
+      var ownerOfTokenAddress = await tokenContract.ownerOf(currentTokenId)
+      isOwner = (account === ownerOfTokenAddress);
+    }
+
+    setIsTokenOwner(isOwner);
 
     setLoadingState(LoadingState.LOADED)
   }
@@ -739,7 +767,7 @@ function MyComponent(props) {
   }
 
   if (isWaitingForValidChainToAutoload) {
-    if (getScribeContractAddress(chainId).length > 0) {
+    if (getScribeContractAddress().length > 0) {
       isWaitingForValidChainToAutoload = false;
 
       onLoadTokenClicked()
