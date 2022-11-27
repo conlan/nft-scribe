@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/nft-scribe/precache-manifest.0ab3f0051875e3c5462b49b987a784a3.js"
+  "/nft-scribe/precache-manifest.ff58125e905c26f1c6fcc41e9fd2cdd5.js"
 );
 
 self.addEventListener('message', (event) => {
