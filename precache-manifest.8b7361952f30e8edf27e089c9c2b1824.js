@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ca1c7697afc3ea6503530daa001d87b5",
+    "revision": "9be3228306605a6c5031c1f101a81b6f",
     "url": "/nft-scribe/index.html"
   },
   {
-    "revision": "8ed4534ba426a5470f11",
+    "revision": "8d96793bfc04d8e309ee",
     "url": "/nft-scribe/static/css/main.85d6c645.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/nft-scribe/static/js/2.6d13c305.chunk.js"
   },
   {
-    "revision": "8ed4534ba426a5470f11",
-    "url": "/nft-scribe/static/js/main.56da10ee.chunk.js"
+    "revision": "8d96793bfc04d8e309ee",
+    "url": "/nft-scribe/static/js/main.a197771c.chunk.js"
   },
   {
     "revision": "a827601ed4929d9e5653",

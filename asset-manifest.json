@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/nft-scribe/static/css/main.85d6c645.chunk.css",
-    "main.js": "/nft-scribe/static/js/main.56da10ee.chunk.js",
-    "main.js.map": "/nft-scribe/static/js/main.56da10ee.chunk.js.map",
+    "main.js": "/nft-scribe/static/js/main.a197771c.chunk.js",
+    "main.js.map": "/nft-scribe/static/js/main.a197771c.chunk.js.map",
     "runtime-main.js": "/nft-scribe/static/js/runtime-main.c702e243.js",
     "runtime-main.js.map": "/nft-scribe/static/js/runtime-main.c702e243.js.map",
     "static/js/2.6d13c305.chunk.js": "/nft-scribe/static/js/2.6d13c305.chunk.js",
     "static/js/2.6d13c305.chunk.js.map": "/nft-scribe/static/js/2.6d13c305.chunk.js.map",
     "index.html": "/nft-scribe/index.html",
-    "precache-manifest.41f4e81d02af080a2d2ec26ff7c2bc18.js": "/nft-scribe/precache-manifest.41f4e81d02af080a2d2ec26ff7c2bc18.js",
+    "precache-manifest.8b7361952f30e8edf27e089c9c2b1824.js": "/nft-scribe/precache-manifest.8b7361952f30e8edf27e089c9c2b1824.js",
     "service-worker.js": "/nft-scribe/service-worker.js",
     "static/css/main.85d6c645.chunk.css.map": "/nft-scribe/static/css/main.85d6c645.chunk.css.map"
   },
@@ -16,6 +16,6 @@
     "static/js/runtime-main.c702e243.js",
     "static/js/2.6d13c305.chunk.js",
     "static/css/main.85d6c645.chunk.css",
-    "static/js/main.56da10ee.chunk.js"
+    "static/js/main.a197771c.chunk.js"
   ]
 }
