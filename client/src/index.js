@@ -24,7 +24,8 @@ const ethers = require('ethers');
 
 const SCRIBE_CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"dictator","type":"address","indexed":false},{"internalType":"address","name":"tokenAddress","type":"address","indexed":false},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"text","type":"string"}],"type":"event","anonymous":false,"name":"Record"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"string","name":"_text","type":"string"}],"name":"dictate","type":"function","constant":false,"outputs":[],"payable":false,"stateMutability":"nonpayable"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"documents","type":"function","constant":true,"outputs":[{"internalType":"address","name":"dictator","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"creationTime","type":"uint256"}],"payable":false,"stateMutability":"view"},{"inputs":[{"internalType":"bytes","name":"","type":"bytes"}],"name":"documentsCount","type":"function","constant":true,"outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view"},{"constant":true,"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getDocumentKey","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"payable":false,"stateMutability":"pure","type":"function"}]
 
-const ERC721_CONTRACT_ABI = [ { "constant": true, "inputs": [ { "name": "_tokenId", "type": "uint256" } ], "name": "ownerOf", "outputs": [ { "name": "_owner", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "account", "type": "address" }, { "internalType": "uint256", "name": "id", "type": "uint256" } ], "name": "balanceOf", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "id", "type": "uint256" } ], "name": "uri", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "tokenId", "type": "uint256" } ], "name": "tokenURI", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" } ]
+const ERC721_CONTRACT_ABI_BALANCE_SINGLE = [ { "constant": true, "inputs": [ { "name": "_tokenId", "type": "uint256" } ], "name": "ownerOf", "outputs": [ { "name": "_owner", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "id", "type": "uint256" } ], "name": "uri", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "tokenId", "type": "uint256" } ], "name": "tokenURI", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "owner", "type": "address" } ], "name": "balanceOf", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" } ]
+const ERC721_CONTRACT_ABI_BALANCE_MULTIPLE = [ { "constant": true, "inputs": [ { "name": "_tokenId", "type": "uint256" } ], "name": "ownerOf", "outputs": [ { "name": "_owner", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "account", "type": "address" }, { "internalType": "uint256", "name": "id", "type": "uint256" } ], "name": "balanceOf", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "id", "type": "uint256" } ], "name": "uri", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "tokenId", "type": "uint256" } ], "name": "tokenURI", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" } ]
 
 const SCRIBE_CONTRACT_ADDRESS_ROPSTEN = "0x9831151655180132E6131AB35A82a5e32C149116" // Ropsten
 const SCRIBE_CONTRACT_ADDRESS_GOERLI = "0x284Dc68Afe4b30793acb7507a0Ae029d91bf698e" // Goerli
@@ -36,7 +37,7 @@ const CHAIN_ID_TESTNET_ROPSTEN = 3;
 const CHAIN_ID_TESTNET_GOERLI = 5;
 const CHAIN_ID_MAINNET_POLYGON = 137;
 
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.1.2";
 
 var currentTokenAddress = "";
 var currentTokenId = 0;
@@ -403,9 +404,25 @@ function MyComponent(props) {
   function handlePolygonTokenURI(tokenUri, tokenId, tokenAddress, callback) {
     console.log(tokenId)
     console.log(tokenUri)
+    console.log(typeof(tokenUri))
+
+    if (tokenUri.startsWith("https://arweave.net/")) {
+      tokenUri = tokenUri.replace("https://arweave.net/", "https://ccskfx3osc4pyxbh6ix7m7lqq2glfzaijilcgc6usjh3zcu3vafa.arweave.net/");
+      console.log(tokenUri)
+    }
 
     if (tokenUri.includes("https://api.opensea.io/api/v2/metadata/matic/")) {
       tokenUri = "https://api.opensea.io/api/v2/metadata/matic/" + tokenAddress + "/" + tokenId;
+      console.log(tokenUri)
+    }
+
+    if (tokenUri.includes("{id}")) {
+      tokenUri = tokenUri.replace("{id}", tokenId);
+      console.log(tokenUri)
+    }
+
+    if (tokenUri.startsWith("ipfs://")) {
+      tokenUri = tokenUri.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/");
       console.log(tokenUri)
     }
 
@@ -413,12 +430,21 @@ function MyComponent(props) {
     var nftTitle = "";
 
     try {
-      fetch (tokenUri).then(response => response.json()).then(response => {
+      fetch(tokenUri).then(response => response.json()).then(response => {
         let tokenUriParsed = response;
 
         console.log(tokenUriParsed)
 
         if (!!tokenUriParsed.image) {
+
+          if (tokenUriParsed.image.startsWith("ipfs://")) {
+            tokenUriParsed.image = tokenUriParsed.image.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/");
+            console.log(tokenUriParsed.image)
+          } else if (tokenUriParsed.image.startsWith("https://arweave.net/")) {
+            tokenUriParsed.image = tokenUriParsed.image.replace("https://arweave.net/", "https://ccskfx3osc4pyxbh6ix7m7lqq2glfzaijilcgc6usjh3zcu3vafa.arweave.net/");
+            console.log(tokenUriParsed.image)
+          }
+
           setNFTPreviewData({
             url : tokenUriParsed.image,
             title : tokenUriParsed.name
@@ -432,12 +458,13 @@ function MyComponent(props) {
         resetToUnloadedState();
       });  
     } catch (e) {
-    //   // ignore error, many tokens will error since not a json object
+      // ignore error, many tokens will error since not a json object
+      console.log(e);
     }
   }
 
   function loadTokenPreviewPolygon(tokenId, tokenAddress, callback) {
-    var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI, getBlockchainProvider());
+    var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI_BALANCE_SINGLE, getBlockchainProvider());
 
     tokenContract.uri(tokenId).then(tokenUri => {
       handlePolygonTokenURI(tokenUri, tokenId, tokenAddress, callback);   
@@ -498,7 +525,7 @@ function MyComponent(props) {
   		});
 
 		  // Get the details from the token URI
-	 	 var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI, getBlockchainProvider())
+	 	 var tokenContract = new ethers.Contract(tokenAddress, ERC721_CONTRACT_ABI_BALANCE_SINGLE, getBlockchainProvider())
 
   		tokenContract.tokenURI(tokenId).then(tokenUri => {
   		  try {
@@ -689,7 +716,7 @@ function MyComponent(props) {
     setTokenDocuments(documents)
 
     // check if we're the owner of this token
-      var tokenContract = new ethers.Contract(currentTokenAddress, ERC721_CONTRACT_ABI, provider)
+    var tokenContract = new ethers.Contract(currentTokenAddress, ERC721_CONTRACT_ABI_BALANCE_MULTIPLE, provider)
 
     var isOwner = false;
     var didFetchOwnerData = false;
@@ -703,13 +730,28 @@ function MyComponent(props) {
         didFetchOwnerData = true;
       } catch (e) {
         console.log(e);
+
+        try {
+          tokenContract = new ethers.Contract(currentTokenAddress, ERC721_CONTRACT_ABI_BALANCE_SINGLE, provider)
+
+          var balanceOfOwner = parseInt((await tokenContract.balanceOf(account)).toString());
+
+          isOwner = (balanceOfOwner > 0);
+          didFetchOwnerData = true;
+        } catch (e) {
+          console.log(e);
+        }
       }
     }
 
     // try OwnerOf method
     if (didFetchOwnerData == false) {
-      var ownerOfTokenAddress = await tokenContract.ownerOf(currentTokenId)
-      isOwner = (account === ownerOfTokenAddress);
+      try {
+        var ownerOfTokenAddress = await tokenContract.ownerOf(currentTokenId)
+        isOwner = (account === ownerOfTokenAddress);
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     setIsTokenOwner(isOwner);
@@ -843,7 +885,7 @@ function MyComponent(props) {
                   <button disabled={(loadingState === LoadingState.LOADING_RECORDS)}  className="load-erc" onClick={() => {
                       onLoadTokenClicked()                      
                     }}
-                  ><b>Load ERC721</b></button>
+                  ><b>Load Token</b></button>
                 )}
                 {
                   (!!(library) === false) && (
