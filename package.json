@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/conlan/nft-annotations#readme",
   "dependencies": {
-    "@truffle/hdwallet-provider": "^1.0.26",
+    "@truffle/hdwallet-provider": "^1.7.0",
     "openzeppelin-solidity": "^2.4.0",
     "truffle-plugin-verify": "^0.3.5"
   }
